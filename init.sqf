@@ -14,6 +14,9 @@ if (!IsServer) exitwith{};
 
 execVM "groupcontrol\groupslist.sqf";
 
+//3rd party scripts
+execVM "3rdparty\DynamicWeatherEffects.sqf";
+
 //-------------------------------------------------------------------------------precompiling
 {call compile format ["%1 = compile preprocessFileLineNumbers 'groupcontrol\%1.sqf'",_x]}
   foreach ["spawner","rangemonitor","troops","vehicles"];
