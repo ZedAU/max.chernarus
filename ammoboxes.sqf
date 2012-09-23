@@ -12,7 +12,7 @@ _sidearms = [["makarov","8rnd_9x18_makarov"],
   ["m9sd","15rnd_9x19_m9sd"],
   ["revolver_ep1","6Rnd_45ACP"],
   ["revolver_gold_ep1","6Rnd_45ACP"],
-  ["Cobalt_File","Pipebomb"]
+  ["Binocular","Pipebomb"]
 ];
 
 for "_i" from 0 to (count _sidearms - 1) do {
