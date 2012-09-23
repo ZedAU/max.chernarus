@@ -22,10 +22,10 @@ if (_veh isKindOf "Air") then {
   _proxy = _dist * 1.25;
 };
 _origdamage = damage _veh;
-_range = false;
 
 //-------------------------------------------------------------------------------get in
 [_group,1] setwaypointposition [getPosATL _veh,0];
+_group,1] setwaypointSpeed _speed;
 _group addVehicle _veh;
 {_x assignAsDriver _veh} foreach units _group;
 (units _group) orderGetIn true;
@@ -40,7 +40,7 @@ while {count crew _veh > 0} do {
   _area = _mindist + random _dist;
   _oldpos = waypointposition [_group,1];
   [_group,1] setwaypointposition [_oldpos,_area];
-  [_group,1] setWaypointType "move";
+  [_group,1] setWaypointType "move";                    //already "move" in troops
   _group setcurrentwaypoint [_group,1];
 
   if ((damage _veh - _origdamage) > _allowdamage and isnull (gunner _veh) and side _group != Civilian) exitWith{};

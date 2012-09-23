@@ -4,7 +4,7 @@
 _group = _this select 0;
 _skill = _this select 1;
 _trav = _this select 2;
-_orig = _this select 3;
+_orig = _this select 3;        //not really needed any more
 
 _speed = _trav select 0;
 _dist = _trav select 1;
@@ -28,12 +28,16 @@ _skilldiff = (_skill select 1) - _skillmin;
 if (side _group != Civilian) then {[_group] spawn rangemonitor};
 // else {[_group,_zone] spawn banditmonitor;}; ??
 //-------------------------------------------------------------------------------get patrolling
-_group addWaypoint [_orig,0];       //chance of multi waypoints? hangs with group for life...
-[_group,1] setWaypointType "move";
-[_group,1] setWaypointSpeed _speed;
+_group addWaypoint [_orig,0];       //chance of multi waypoints? stays with group for life...
+[_group,1] setWaypointType "move";  //only needed if move is needed below
 //-------------------------------------------------------------------------------loop
 _drive = 1;
 while {count units _group > 0} do {
+  [_group,1] setwaypointposition [_oldpos,_area];
+  [_group,1] setWaypointType "move";   //needed? is there any place waypoint 1 is not move anymore
+  [_group,1] setWaypointSpeed _speed;
+  _group setcurrentwaypoint [_group,1];
+  
   waituntil {
     (((getPosATL (units _group select 0)) distance (getwppos [_group,1])) < _proxy AND
     units _group select 0 == vehicle (units _group select 0)) OR
@@ -42,10 +46,6 @@ while {count units _group > 0} do {
   if (count units _group == 0) exitWith{};   //and delete group?
   _area = _mindist + random _dist;
   _oldpos = waypointposition [_group,1];
-
-  [_group,1] setwaypointposition [_oldpos,_area];
-  [_group,1] setWaypointType "move";
-  _group setcurrentwaypoint [_group,1];
 //-------------------------------------------------------------------------------look for vehicles
   _drive = _drive - 1;
   if (_drive == 0) then {
