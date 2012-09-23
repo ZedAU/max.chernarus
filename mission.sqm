@@ -42,7 +42,9 @@ class Mission
 		"cawheeled_e_volha",
 		"cadata",
 		"CAWheeled3_TT650",
-		"CAWheeled2_V3S"
+		"CAWheeled2_V3S",
+		"CAWheeled_E_ATV",
+		"cawheeled_d_baf"
 	};
 	addOnsAuto[]=
 	{
@@ -77,6 +79,8 @@ class Mission
 		"cadata",
 		"CAWheeled3_TT650",
 		"CAWheeled2_V3S",
+		"CAWheeled_E_ATV",
+		"cawheeled_d_baf",
 		"chernarus"
 	};
 	randomSeed=8923102;
@@ -93,7 +97,7 @@ class Mission
 	};
 	class Groups
 	{
-		items=11;
+		items=12;
 		class Item0
 		{
 			side="LOGIC";
@@ -302,10 +306,29 @@ class Mission
 				};
 			};
 		};
+		class Item11
+		{
+			side="GUER";
+			class Vehicles
+			{
+				items=1;
+				class Item0
+				{
+					presence=0;
+					position[]={5144.4546,8.9667206,2348.1655};
+					special="NONE";
+					id=100;
+					side="GUER";
+					vehicle="GUE_Soldier_2";
+					leader=1;
+					skill=0.60000002;
+				};
+			};
+		};
 	};
 	class Vehicles
 	{
-		items=87;
+		items=89;
 		class Item0
 		{
 			position[]={1862.8849,6,2137.5325};
@@ -540,8 +563,8 @@ class Mission
 		};
 		class Item21
 		{
-			position[]={4691.2524,6.9000001,2404.6504};
-			azimut=73.087502;
+			position[]={4813.4253,8.9173641,2503.6975};
+			azimut=-106.247;
 			special="NONE";
 			id=21;
 			side="EMPTY";
@@ -1041,6 +1064,7 @@ class Mission
 			vehicle="AW159_Lynx_BAF";
 			leader=1;
 			skill=0.60000002;
+			init="ClearMagazineCargo this; ClearWeaponCargo this; this addMagazineCargo [""SmokeShell"",4]; this addMagazineCargo [""SmokeShellRed"",2]; this addMagazineCargo [""SmokeShellGreen"",2]; this addWeaponCargo [""ItemMap"",5]";
 		};
 		class Item71
 		{
@@ -1196,6 +1220,25 @@ class Mission
 			side="EMPTY";
 			vehicle="V3S_Gue";
 			skill=0.60000002;
+		};
+		class Item87
+		{
+			position[]={5169.104,15.354574,2378.1116};
+			azimut=235;
+			id=98;
+			side="EMPTY";
+			vehicle="ATV_CZ_EP1";
+			skill=0.60000002;
+		};
+		class Item88
+		{
+			position[]={5165.4717,15.263126,2370.1511};
+			azimut=215;
+			id=99;
+			side="EMPTY";
+			vehicle="SUV_PMC_BAF";
+			skill=0.60000002;
+			init="this addWeaponCargo [""M4A1_AIM_SD_CAMO"",2]; this addMagazineCargo [""30Rnd_556x45_StanagSD"",20]";
 		};
 	};
 	class Markers
@@ -1433,7 +1476,7 @@ class Mission
 			repeating=1;
 			interruptable=1;
 			age="UNKNOWN";
-			expActiv="null = [""bolota"",""TK"",[2,5],[""normal"",50],100,10] spawn spawner;";
+			expActiv="null = [""balota"",""TK"",[2,5],[""normal"",50],100,10] spawn spawner;";
 			class Effects
 			{
 			};
