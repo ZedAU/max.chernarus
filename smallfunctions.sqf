@@ -11,7 +11,7 @@ playerRespawn = {
   _magazines = [];
   removeAllItems _p;
   removeAllWeapons _p;
-  {_p addWeapon _x} forEach ["Binocular","ItemMap","ItemGPS"];
+  {_p addWeapon _x} forEach ["ItemMap","ItemGPS"];
   {_p addMagazine _x} forEach [];
   while {true} do {
     waitUntil {!alive player};
