@@ -330,7 +330,7 @@ class Mission
 	};
 	class Vehicles
 	{
-		items=95;
+		items=100;
 		class Item0
 		{
 			position[]={1862.8849,6,2137.5325};
@@ -1304,10 +1304,59 @@ class Mission
 			vehicle="M2HD_mini_TriPod";
 			skill=0.60000002;
 		};
+		class Item95
+		{
+			position[]={3336.02,186.15047,3956.7454};
+			azimut=229;
+			special="NONE";
+			id=107;
+			side="EMPTY";
+			vehicle="UAZ_SPG9_INS";
+			lock="UNLOCKED";
+			skill=0.60000002;
+		};
+		class Item96
+		{
+			position[]={3326.7029,185.98,3946.8789};
+			azimut=220;
+			special="NONE";
+			id=108;
+			side="EMPTY";
+			vehicle="GAZ_Vodnik";
+			lock="UNLOCKED";
+			skill=0.60000002;
+		};
+		class Item97
+		{
+			position[]={3302.7373,209.08142,4065.5845};
+			azimut=125;
+			id=109;
+			side="EMPTY";
+			vehicle="M2HD_mini_TriPod";
+			skill=0.60000002;
+		};
+		class Item98
+		{
+			position[]={3313.7932,220.35188,4116.7661};
+			azimut=185;
+			id=110;
+			side="EMPTY";
+			vehicle="Fort_Nest_M240";
+			skill=0.60000002;
+		};
+		class Item99
+		{
+			position[]={3167.3054,219.53448,3899.0129};
+			azimut=85;
+			id=111;
+			side="EMPTY";
+			vehicle="Fort_Nest_M240";
+			skill=0.60000002;
+		};
 	};
 	class Markers
 	{
-		items=24;
+		items=25;
 		class Item0
 		{
 			position[]={1855.8425,5.9325924,2133.8193};
@@ -1476,10 +1525,16 @@ class Mission
 			name="pavlovo";
 			type="Empty";
 		};
+		class Item24
+		{
+			position[]={3335.9395,190.4549,3943.1748};
+			name="bor";
+			type="Empty";
+		};
 	};
 	class Sensors
 	{
-		items=8;
+		items=9;
 		class Item0
 		{
 			position[]={1882.7896,6.1796136,2242.4717};
@@ -1588,6 +1643,19 @@ class Mission
 			interruptable=1;
 			age="UNKNOWN";
 			expActiv="null = [""pavlovo"",""TK"",[2,5],[""normal"",50],100,10] spawn spawner;";
+			class Effects
+			{
+			};
+		};
+		class Item8
+		{
+			position[]={3330.9771,185.98575,3952.1384};
+			a=1000;
+			b=1000;
+			activationBy="GUER";
+			interruptable=1;
+			age="UNKNOWN";
+			expActiv="null = [""bor"",""TK"",[2,5],[""normal"",50],100,10] spawn spawner;";
 			class Effects
 			{
 			};
