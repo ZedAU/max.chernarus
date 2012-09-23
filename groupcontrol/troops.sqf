@@ -33,8 +33,9 @@ _group addWaypoint [_orig,0];       //chance of multi waypoints? stays with grou
 //-------------------------------------------------------------------------------loop
 _drive = 1;
 while {count units _group > 0} do {
+  _area = _mindist + random _dist;
+  _oldpos = waypointposition [_group,1];
   [_group,1] setwaypointposition [_oldpos,_area];
-  [_group,1] setWaypointType "move";   //needed? is there any place waypoint 1 is not move anymore
   [_group,1] setWaypointSpeed _speed;
   _group setcurrentwaypoint [_group,1];
   
@@ -44,8 +45,6 @@ while {count units _group > 0} do {
     count units _group == 0;                  //goal proxy and not in vehicle or all dead
   };
   if (count units _group == 0) exitWith{};   //and delete group?
-  _area = _mindist + random _dist;
-  _oldpos = waypointposition [_group,1];
 //-------------------------------------------------------------------------------look for vehicles
   _drive = _drive - 1;
   if (_drive == 0) then {

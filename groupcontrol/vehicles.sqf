@@ -25,7 +25,7 @@ _origdamage = damage _veh;
 
 //-------------------------------------------------------------------------------get in
 [_group,1] setwaypointposition [getPosATL _veh,0];
-_group,1] setwaypointSpeed _speed;
+[_group,1] setwaypointSpeed _speed;
 _group addVehicle _veh;
 {_x assignAsDriver _veh} foreach units _group;
 (units _group) orderGetIn true;
