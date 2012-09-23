@@ -12,7 +12,7 @@ onMapSingleClick "[_pos,_alt] call setmhq; true";
 if (!IsServer) exitwith{};
 //-------------------------------------------------------------------------------server only
 
-execVM "groupslist.sqf";
+execVM "groupcontrol\groupslist.sqf";
 
 //-------------------------------------------------------------------------------precompiling
 {call compile format ["%1 = compile preprocessFileLineNumbers 'groupcontrol\%1.sqf'",_x]}
@@ -38,5 +38,5 @@ while {true} do {
   } else {
     "respawn_guerrila" setmarkerpos (getmarkerpos "home");
   };
-sleep 5;
+sleep 1;
 };

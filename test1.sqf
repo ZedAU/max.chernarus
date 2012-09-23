@@ -6,7 +6,7 @@ if (!IsServer) exitwith{};
 _pole = _this select 0;
 _name = typeOf _pole;
 
-_pole setflagtexture "skull.jpg";
+_pole setflagtexture "flags\skull.jpg";
 
 hint format ["--Testing--\n
   bandits off\n
