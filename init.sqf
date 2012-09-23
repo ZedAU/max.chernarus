@@ -15,11 +15,12 @@ if (!IsServer) exitwith{};
 execVM "groupslist.sqf";
 
 //-------------------------------------------------------------------------------precompiling
-{call compile format ["%1 = compile preprocessFileLineNumbers '%1.sqf'",_x]}
-  foreach [
-    "spawner","rangemonitor","troops","vehicles",
-    "banditspawner","banditmonitor","loadheli","callheli"
-  ];
+{call compile format ["%1 = compile preprocessFileLineNumbers 'groupcontrol\%1.sqf'",_x]}
+  foreach ["spawner","rangemonitor","troops","vehicles"];
+  
+{call compile format ["%1 = compile preprocessFileLineNumbers 'banditcontrol\%1.sqf'",_x]}
+  foreach ["banditspawner","banditmonitor","loadheli","callheli"];
+  
 
 sleep 10;  //needed?
 
