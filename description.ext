@@ -1,0 +1,7 @@
+respawn= "base";
+respawndelay= 5;
+disabledAI = 1;
+//showMap = 0;
+aiKills = 1;
+
+//loadScreen =  "pictures\intro.paa";

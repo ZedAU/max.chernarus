@@ -1,0 +1,41 @@
+/*  Notes
+*/
+//enableRadio false;  //could switch it on when needed?
+0 fadeRadio .05;
+
+_handler = execVM "smallfunctions.sqf";
+waitUntil {scriptDone _handler};
+[] spawn playerRespawn;
+
+onMapSingleClick "[_pos,_alt] call setmhq; true";
+
+if (!IsServer) exitwith{};
+//-------------------------------------------------------------------------------server only
+
+execVM "groupslist.sqf";
+
+//-------------------------------------------------------------------------------precompiling
+{call compile format ["%1 = compile preprocessFileLineNumbers '%1.sqf'",_x]}
+  foreach [
+    "spawner","rangemonitor","troops","vehicles",
+    "banditspawner","banditmonitor","loadheli","callheli"
+  ];
+
+sleep 10;  //needed?
+
+//-------------------------------------------------------------------------------get bandits going
+_zones = ["SWzone","SEzone","NEzone","NWzone"];
+{[_x,true] spawn banditspawner} foreach _zones; //heli bandits
+{[_x,false] spawn banditspawner} foreach _zones; //foot bandits
+
+//-------------------------------------------------------------------------------mhq marker
+
+if (isNil "mhq") then {mhq = mhq1};
+while {true} do {
+  if (alive mhq) then {
+    "respawn_guerrila" setmarkerpos (getPosATL mhq);
+  } else {
+    "respawn_guerrila" setmarkerpos (getmarkerpos "home");
+  };
+sleep 5;
+};
