@@ -1,4 +1,5 @@
 
+if (!IsServer) exitwith{};
 _box = _this select 0;
 hint "ammoboxes running";
 _amount = 5;

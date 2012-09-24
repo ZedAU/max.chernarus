@@ -1,5 +1,6 @@
 /*  Notes
 */
+if (!IsServer) exitwith{};
 //-------------------------------------------------------------------------------args
 _group = _this select 0;      //one or the other?
 _veh = _this select 1;

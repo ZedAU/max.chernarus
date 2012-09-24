@@ -1,5 +1,6 @@
 /*  Notes
 */                                                  //hint (just for search)
+if (!IsServer) exitwith{};
 //-------------------------------------------------------------------------------args
 _group = _this select 0;
 _skill = _this select 1;

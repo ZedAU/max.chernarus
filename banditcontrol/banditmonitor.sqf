@@ -1,5 +1,6 @@
 ﻿/*  Notes
 */
+if (!IsServer) exitwith{};
 //-------------------------------------------------------------------------------Settings
 _sens = 1;                            //awareness level when spotted occures 1 -> 4
 _reset = 120;                         //timer before retrigger (120 min arma2 knowsAbout reset)
