@@ -3,8 +3,7 @@
 //-------------------------------------------------------------------------------args
 _group = _this select 0;
 _trav = _this select 1;
-_oldpos = _this select 2;
-_veh = _this select 3;                          //hint (just for search)
+_veh = _this select 2;                          //hint (just for search)
 
 //-------------------------------------------------------------------------------settings
 _speed = "full";
@@ -40,7 +39,6 @@ while {count crew _veh > 0} do {
   _area = _mindist + random _dist;
   _oldpos = waypointposition [_group,1];
   [_group,1] setwaypointposition [_oldpos,_area];
-  [_group,1] setWaypointType "move";                    //already "move" in troops
   _group setcurrentwaypoint [_group,1];
 
   if ((damage _veh - _origdamage) > _allowdamage and isnull (gunner _veh) and side _group != Civilian) exitWith{};

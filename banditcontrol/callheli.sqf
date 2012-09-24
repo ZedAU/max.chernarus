@@ -37,7 +37,7 @@ if (_para) then {
 _groupE leaveVehicle _veh;
 waituntil {sleep 1; count crew _veh == 1 or (count units _group) == 0};
   //could add trigger for persistance
-[_groupE,[8,10],["normal",100],getPosATL (units _groupE select 0)] spawn troops;   
+[_groupE,[8,10],["normal",100]] spawn troops;   
 
 //-------------------------------------------------------------------------------go load back up
 [_group, _veh, _zone] spawn loadheli;

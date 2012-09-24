@@ -39,6 +39,6 @@ while {_times > 0} do {
   _group setCombatMode _combatmode;
 
   //-------------------------------------------------------------------------------pass to troops script
-  [_group,_skill,_trav,_orig] spawn troops;
+  [_group,_skill,_trav] spawn troops;
 };
 

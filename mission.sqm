@@ -1055,7 +1055,7 @@ class Mission
 			vehicle="FlagPole_EP1";
 			leader=1;
 			skill=0.60000002;
-			init="this addAction [""Test Spawner"", ""test.sqf"",this]; this addAction [""Test Bandits"", ""test1.sqf"",this];";
+			init="this addAction [""Test Spawner"", ""testspawn.sqf"",this]; this addAction [""Test Bandits"", ""testbandits.sqf"",this];";
 		};
 		class Item70
 		{

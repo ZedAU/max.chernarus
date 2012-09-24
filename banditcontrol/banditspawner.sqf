@@ -35,12 +35,12 @@ while {true} do {
     _group addvehicle _veh;
     units _group select 0 moveIndriver _veh;
     sleep 1;
-    [_group,[_skillmin,_skillmax],["normal",_dist],_pos] spawn troops;
+    [_group,[_skillmin,_skillmax],["normal",_dist]] spawn troops;
     sleep 1;
-    [_group,["normal",_dist],_pos,_veh] spawn vehicles;
+    [_group,["normal",_dist],_veh] spawn vehicles;
     [_group, _veh, _zone] spawn loadheli;
   } else {
-    [_group,[_skillmin,_skillmax],["normal",_dist],_pos] spawn troops;
+    [_group,[_skillmin,_skillmax],["normal",_dist]] spawn troops;
   };
   [_group,_zone] spawn banditmonitor;   //handle in troops? no zone??
   if (_heli) then {

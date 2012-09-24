@@ -27,8 +27,6 @@ sleep 1;
 _groupE addVehicle _veh;
 {_x assignAsCargo _veh;} foreach (units _groupE);
 (units _groupE) orderGetIn true;                     //may not be needed??? was assigning the wrong group
-
-hint format ["---Loading---\n_group: %1\n_groupE: %2", units _group select 0 , units _groupE];
 //-------------------------------------------------------------------------------return to pre call location
 //need to check progress
 _group setcurrentwaypoint [_group,1];
