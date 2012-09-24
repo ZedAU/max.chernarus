@@ -7,7 +7,7 @@ _handler = execVM "smallfunctions.sqf";
 waitUntil {scriptDone _handler};
 [] spawn playerRespawn;
 
-onMapSingleClick "[_pos,_alt] call setmhq; true";
+onMapSingleClick "[_pos,_alt] call setmhq; if (_alt) then {true} else {false}";
 
 if (!IsServer) exitwith{};
 //-------------------------------------------------------------------------------server only
