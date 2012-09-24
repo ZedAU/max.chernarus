@@ -1,6 +1,5 @@
 /*  Notes
 */
-if (!IsServer) exitwith{};
 //-------------------------------------------------------------------------------args
 _group = _this select 0;
 _trav = _this select 1;

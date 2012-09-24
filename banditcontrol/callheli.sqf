@@ -1,6 +1,5 @@
 /*  Notes
 */
-if (!IsServer) exitwith{};
 //-------------------------------------------------------------------------------args
 _zone = _this select 0;                                                                     //hint
 _spottedpos = _this select 1;

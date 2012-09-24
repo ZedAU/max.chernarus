@@ -1,6 +1,5 @@
 /*  Notes
-*/
-if (!IsServer) exitwith{};                      //hint;
+*/                     //hint;
 //-------------------------------------------------------------------------------Settings
 //sleep 30 + random 30;               //keep down sync issues/serverload on startup?
 sleep random 3;                       //desync scripts on startup
