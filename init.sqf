@@ -9,13 +9,13 @@ waitUntil {scriptDone _handler};
 
 onMapSingleClick "[_pos,_alt] call setmhq; if (_alt) then {true} else {false}";
 
+//3rd party scripts
+execVM "3rdparty\DynamicWeatherEffects.sqf";
+
 if (!IsServer) exitwith{};
 //-------------------------------------------------------------------------------server only
 
 execVM "groupcontrol\groupslist.sqf";
-
-//3rd party scripts
-execVM "3rdparty\DynamicWeatherEffects.sqf";
 
 //-------------------------------------------------------------------------------precompiling
 {call compile format ["%1 = compile preprocessFileLineNumbers 'groupcontrol\%1.sqf'",_x]}
