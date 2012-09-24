@@ -24,9 +24,6 @@ execVM "3rdparty\DynamicWeatherEffects.sqf";
 {call compile format ["%1 = compile preprocessFileLineNumbers 'banditcontrol\%1.sqf'",_x]}
   foreach ["banditspawner","banditmonitor","loadheli","callheli"];
   
-
-sleep 10;  //needed?
-
 //-------------------------------------------------------------------------------get bandits going
 _zones = ["SWzone","SEzone","NEzone","NWzone"];
 {[_x,true] spawn banditspawner} foreach _zones; //heli bandits

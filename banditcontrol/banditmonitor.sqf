@@ -3,8 +3,7 @@
 //-------------------------------------------------------------------------------Settings
 _sens = 1;                            //awareness level when spotted occures 1 -> 4
 _reset = 120;                         //timer before retrigger (120 min arma2 knowsAbout reset)
-_fper = 60;                           //foot patrol search period
-_vper = 3;                            //vehicle patrol search period
+_per = 3;                             //patrol search period
 //-------------------------------------------------------------------------------
 
 _group = _this select 0;
@@ -36,9 +35,5 @@ while {count units _group > 0} do {
     waituntil {scriptDone _handler or count units _group == 0};
     _timer = time;
   };
-  if ((units _group select 0) == vehicle (units _group select 0)) then {
-    sleep _fper;
-  } else {
-    sleep _vper;
-  };
+  sleep _per;
 };

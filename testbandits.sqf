@@ -8,10 +8,10 @@ _name = typeOf _pole;
 
 _pole setflagtexture "flags\skull.jpg";
 
-hint format ["--Testing--\n
-  bandits off\n
-  %1\n
-  in 3..2..1..",_name];
+hint "--Testing Bandits--";
   
 sleep 3;
-["testzone",true] spawn banditspawner;           //bandit spawn
+["testzone",true] spawn banditspawner;
+sleep 40;
+hint "spawning foot bandits";
+["testzone",false] spawn banditspawner;

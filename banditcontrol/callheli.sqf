@@ -9,24 +9,25 @@ _gopara = _this select 3;
 //-------------------------------------------------------------------------------setup
 _veh = call compile format ["%1heli",_zone];  //need call???
 //---------randomizer to estimate ticket call
-waitUntil {sleep (random 5 + 2); (alive _veh OR (count waypoints group _veh) < 3)};
+while {!alive _veh or (count waypoints group _veh) > 2} do {sleep (random 5 + 5)};
 _group = group driver _veh;
 _groupE = group (assignedCargo _veh select 0);
   //player is in veh or para called (bandit damage)
-_para = ((_player != vehicle _player) or _gopara);
+_para = (_player != vehicle _player or _gopara);
 
 //-------------------------------------------------------------------------------get moving
 _group addWaypoint [_spottedpos,0];
 [_group,2] setWaypointType "move";
 _group setcurrentwaypoint [_group,2];
 _testtime = time;                              //remove
-waituntil {(_veh distance (getwppos [_group,2])) < 300 or (count units _group) == 0};
-
 sleep 2;
 hint format [
-  "Heli called\nPara: %1\nwpts: %2\nwait time: %3\ngroup: %4",
-  _para, count waypoints _group, time - _testtime, count units _group
+  "Heli called\nPara: %1\nwpts: %2\ngroup: %3",
+  _para, count waypoints _group, count units _group
 ];
+
+waituntil {(_veh distance (getwppos [_group,2])) < 300 or (count units _group) == 0};
+
 //-------------------------------------------------------------------------------drop off
 if (_para) then {
   for "_i" from 1 to 5 do {_veh fire "CMFlareLauncher";sleep .2};

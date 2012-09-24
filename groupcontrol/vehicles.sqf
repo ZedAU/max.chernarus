@@ -26,28 +26,28 @@ _origdamage = damage _veh;
 [_group,1] setwaypointposition [getPosATL _veh,0];
 [_group,1] setwaypointSpeed _speed;
 _group addVehicle _veh;
-{_x assignAsDriver _veh} foreach units _group;
+//{_x assignAsDriver _veh} foreach units _group; //????????????
 (units _group) orderGetIn true;
 
 waituntil {count crew _veh >= count units _group or count units _group == 0};
 //-------------------------------------------------------------------------------main loop
 while {count crew _veh > 0} do {
-  waituntil {(currentWaypoint _group < 2 and (_veh distance (getwppos [_group,1]) < _proxy or
-  (damage _veh - _origdamage) > _allowdamage)) or 
-  !alive driver _veh};
-  
+  waituntil {(_veh emptyPositions "driver" == 0 and !alive driver _veh) or 
+    _veh distance (getwppos [_group,1]) < _proxy or
+    (damage _veh - _origdamage) > _allowdamage
+  };  //position my be empty with dead driver??? test
+  waituntil {currentWaypoint _group < 3};
   _area = _mindist + random _dist;
   _oldpos = waypointposition [_group,1];
   [_group,1] setwaypointposition [_oldpos,_area];
   _group setcurrentwaypoint [_group,1];
 
   if ((damage _veh - _origdamage) > _allowdamage and isnull (gunner _veh) and side _group != Civilian) exitWith{};
-  if (!(canMove _veh) or !alive driver _veh) exitWith{};
+  if (!(canMove _veh) or !alive driver _veh) exitWith{}; //would they kick body out???
   
   _origdamage = damage _veh;
 };
 {unassignVehicle _x} foreach units _group;
 _group leaveVehicle _veh;
-hint format ["waiting to exit\n%1",typeOf _veh];
-waituntil {_veh emptypositions "driver" == 1 or !alive driver _veh};
+waituntil {_veh emptypositions "driver" == 1 or !alive driver _veh}; //count crew _veh == 0
 hint format ["exiting vehicles script\n%1",typeOf _veh];
