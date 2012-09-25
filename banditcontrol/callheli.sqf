@@ -19,14 +19,20 @@ _para = (_player != vehicle _player or _gopara);
 _group addWaypoint [_spottedpos,0];
 [_group,2] setWaypointType "move";
 _group setcurrentwaypoint [_group,2];
-_testtime = time;                              //remove
 sleep 2;
+[_group,1] setwaypointposition [_spottedpos,0]; //set for continuing search from here
 hint format [
-  "Heli called\nPara: %1\nwpts: %2\ngroup: %3",
-  _para, count waypoints _group, count units _group
+  "Heli called\nPara: %1\ngroupE: %2",
+  _para, count units _groupE
 ];
 
-waituntil {(_veh distance (getwppos [_group,2])) < 300 or (count units _group) == 0};
+waituntil {(_veh distance (getwppos [_group,2])) < 300 or !alive driver _veh or !(canMove _veh)};
+
+//-------------------------------------------------------------------------------abort
+if (!alive driver _veh or !(canMove _veh)) exitWith {
+  _group setcurrentwaypoint [_group,1];
+  deleteWaypoint [_group,2];
+};
 
 //-------------------------------------------------------------------------------drop off
 if (_para) then {

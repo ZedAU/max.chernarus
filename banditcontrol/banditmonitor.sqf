@@ -1,4 +1,4 @@
-﻿/*  Notes
+﻿/*  Notes                       //hint
 */
 //-------------------------------------------------------------------------------Settings
 _sens = 1;                            //awareness level when spotted occures 1 -> 4

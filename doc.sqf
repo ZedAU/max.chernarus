@@ -2,7 +2,6 @@
 if (!IsServer) exitwith{};
 
 _doc = _this select 0;
-hint str _doc;
 
 for "_i" from 1 to 5 do {_doc addmagazine "30rnd_556x45_stanag"};
 _doc addweapon "M4a3_rco_gl_ep1";

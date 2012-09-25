@@ -20,7 +20,7 @@ playerRespawn = {
     _weapon = (_sidearms select _pick) select 0;
     removeAllItems player;
     removeAllWeapons player;
-    for "_i" from 1 to 1 + floor random 7 do {player addMagazine _mag};
+    for "_i" from 1 to (1 + floor random 7) do {player addMagazine _mag};
     {player addWeapon _x} forEach [_weapon,"ItemMap","ItemCompass","ItemRadio","Binocular"];
     
     waitUntil {!alive player};

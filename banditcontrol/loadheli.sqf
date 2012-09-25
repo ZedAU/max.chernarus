@@ -1,5 +1,5 @@
 /*  Notes
-*/
+*/                       //hint
 //-------------------------------------------------------------------------------args
 _group = _this select 0;      //one or the other?
 _veh = _this select 1;
@@ -13,7 +13,7 @@ if ((count waypoints group _veh) < 3) then {
 };
 [_group,2] setWaypointType "move";
 _group setcurrentwaypoint [_group,2];
-waituntil {((units _group select 0) distance (getwppos [_group,2])) < 200};
+waituntil {((units _group select 0) distance (getwppos [_group,2])) < 200};  //need to add abort
 //or new enemy to load is engaged? etc;
 //-------------------------------------------------------------------------------spawn load
 //spawn new
@@ -28,10 +28,10 @@ _groupE addVehicle _veh;
 {_x assignAsCargo _veh;} foreach (units _groupE);
 (units _groupE) orderGetIn true;                     //may not be needed??? was assigning the wrong group
 //-------------------------------------------------------------------------------return to pre call location
-//need to check progress
-_group setcurrentwaypoint [_group,1];
+//need to check progress?
 //-------------------------------------------------------------------------------cleanup
-deleteWaypoint [_group,2];          //only instance deleted?
+_group setcurrentwaypoint [_group,1];
+deleteWaypoint [_group,2];          //only instance deleted? added to callheli abort
 waituntil {count crew _veh >= count units _groupE or count units _group == 0 or count units _groupE == 0};
 //need to reloadheli if the troops are dead? wastetime location
 hint "load done";
