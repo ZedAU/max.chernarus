@@ -1049,11 +1049,11 @@ class Mission
 		};
 		class Item69
 		{
-			position[]={1768.9766,6.2322092,2096.2566};
+			position[]={1769.4037,6.2466269,2094.8337};
 			azimut=2.0436499;
 			id=75;
 			side="EMPTY";
-			vehicle="FlagPole_EP1";
+			vehicle="Land_Campfire_burning";
 			leader=1;
 			skill=0.60000002;
 			init="this addAction [""Test Spawner"", ""testspawn.sqf"",this]; this addAction [""Test Bandits"", ""testbandits.sqf"",this];";

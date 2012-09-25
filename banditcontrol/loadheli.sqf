@@ -11,10 +11,18 @@ if ((count waypoints group _veh) < 3) then {
 } else {
   [_group,2] setwaypointposition [getmarkerpos _zone,0];
 };
-[_group,2] setWaypointType "move";
+_driver = driver _veh;
+
+[_group,2] setWaypointType "move";  //needed?
 _group setcurrentwaypoint [_group,2];
-waituntil {((units _group select 0) distance (getwppos [_group,2])) < 200};  //need to add abort
-//or new enemy to load is engaged? etc;
+waituntil {(_veh distance (getwppos [_group,2])) < 200 or !alive _driver or !canMove _veh};
+
+//-------------------------------------------------------------------------------abort
+if (!alive _driver or !canMove _veh) exitWith{
+  _group setcurrentwaypoint [_group,1];
+  deleteWaypoint [_group,2];
+  hint "aborting loadheli";
+};
 //-------------------------------------------------------------------------------spawn load
 //spawn new
 _pick = USlist select (floor random (count USlist));  //zone magic needed
@@ -30,8 +38,8 @@ _groupE addVehicle _veh;
 //-------------------------------------------------------------------------------return to pre call location
 //need to check progress?
 //-------------------------------------------------------------------------------cleanup
+waituntil {count crew _veh >= count units _groupE or count units _group == 0 or count units _groupE == 0};
 _group setcurrentwaypoint [_group,1];
 deleteWaypoint [_group,2];          //only instance deleted? added to callheli abort
-waituntil {count crew _veh >= count units _groupE or count units _group == 0 or count units _groupE == 0};
-//need to reloadheli if the troops are dead? wastetime location
+//need to reloadheli if the troops are dead? wastetime location?
 hint "load done";

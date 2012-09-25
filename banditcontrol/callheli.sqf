@@ -7,31 +7,33 @@ _player = _this select 2;
 _gopara = _this select 3;
 
 //-------------------------------------------------------------------------------setup
-_veh = call compile format ["%1heli",_zone];  //need call???
-//---------randomizer to estimate ticket call
-while {!alive _veh or (count waypoints group _veh) > 2} do {sleep (random 5 + 5)};
+_veh = call compile format ["%1heli",_zone];
 _group = group driver _veh;
-_groupE = group (assignedCargo _veh select 0);
-  //player is in veh or para called (bandit damage)
+//---------randomizer to estimate ticket call
+while {(count waypoints _group) > 2} do {sleep (random 5 + 5)}; //leave while!
+
+_groupE = group ((assignedCargo _veh) select 0);
 _para = (_player != vehicle _player or _gopara);
+_driver = driver _veh;
+[_group,1] setwaypointposition [_spottedpos,0]; //set for continuing search
 
 //-------------------------------------------------------------------------------get moving
 _group addWaypoint [_spottedpos,0];
 [_group,2] setWaypointType "move";
+[_group,2] setwaypointSpeed "full";
 _group setcurrentwaypoint [_group,2];
-sleep 2;
-[_group,1] setwaypointposition [_spottedpos,0]; //set for continuing search from here
 hint format [
   "Heli called\nPara: %1\ngroupE: %2",
   _para, count units _groupE
 ];
 
-waituntil {(_veh distance (getwppos [_group,2])) < 300 or !alive driver _veh or !(canMove _veh)};
+waituntil {(_veh distance _spottedpos) < 300 or !alive _driver or !canMove _veh};
 
 //-------------------------------------------------------------------------------abort
-if (!alive driver _veh or !(canMove _veh)) exitWith {
+if (!alive _driver or !canMove _veh) exitWith{
   _group setcurrentwaypoint [_group,1];
   deleteWaypoint [_group,2];
+  hint "aborting callheli";
 };
 
 //-------------------------------------------------------------------------------drop off

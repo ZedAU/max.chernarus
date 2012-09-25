@@ -30,20 +30,21 @@ while {true} do {
   };
   if (_heli) then {
     _veh = createVehicle ["CH_47F_BAF", _pos, [], 0, "FLY"];
-    call compile format["%1 = _veh", format ["%1heli",_zone]];
     _group addvehicle _veh;
     units _group select 0 moveIndriver _veh;
     sleep 1;
     [_group,[_skillmin,_skillmax],["normal",_dist]] spawn troops;
     sleep 1;
     [_group,["normal",_dist],_veh] spawn vehicles;
-    [_group, _veh, _zone] spawn loadheli;
+    _handler = [_group, _veh, _zone] spawn loadheli;
+    waitUntil {scriptDone _handler};
+    call compile format["%1 = _veh", format ["%1heli",_zone]];
   } else {
     [_group,[_skillmin,_skillmax],["normal",_dist]] spawn troops;
   };
   [_group,_zone] spawn banditmonitor;   //handle in troops? no zone??
   if (_heli) then {
-    waitUntil {sleep _period; !canMove _veh or count units _group == 0};
+    waitUntil {sleep _period; (!canMove _veh or count units _group == 0)};
     {unassignVehicle _x} foreach units _group;
     _group leaveVehicle _veh;
   } else {

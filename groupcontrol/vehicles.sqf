@@ -30,19 +30,20 @@ _group addVehicle _veh;
 (units _group) orderGetIn true;
 
 waituntil {count crew _veh >= count units _group or count units _group == 0};
+_driver = driver _veh;
 //-------------------------------------------------------------------------------main loop
 while {count crew _veh > 0} do {
   waituntil {
     _veh distance (getwppos [_group,1]) < _proxy or 
     (damage _veh - _origdamage) > _allowdamage or
-    isnull (driver _veh)
-  };  //position my not be empty with dead driver??? test
+    !alive _driver;
+  };
   waituntil {currentWaypoint _group < 3};
 
 //-------------------------------------------------------------------------------abort
   if ((damage _veh - _origdamage) > _allowdamage and isnull (gunner _veh) and side _group != Civilian) exitWith{};
-  if (!canMove _veh or isnull (driver _veh)) exitWith{};
-  //would they kick body out???
+  if (!canMove _veh or !alive _driver) exitWith{};
+  //would they kick body out???  they do, but it takes a lot of time and the other dudes dont get back in
   
   _area = _mindist + random _dist;
   _oldpos = waypointposition [_group,1];
