@@ -5,24 +5,24 @@
 
 //-------------------------------------------------------------------------------all clients
 playerRespawn = {
-  waitUntil {!isNull player};
+  _sidearms = [["makarov","8rnd_9x18_makarov"],
+    ["colt1911","7rnd_45acp_1911"],
+    ["glock17_ep1","17rnd_9x19_glock17"],
+    ["m9","15rnd_9x19_m9"],
+    ["m9sd","15rnd_9x19_m9sd"],
+    ["revolver_ep1","6Rnd_45ACP"],
+    ["revolver_gold_ep1","6Rnd_45ACP"]
+  ];
   while {true} do {
-    _sidearms = [["makarov","8rnd_9x18_makarov"],
-      ["colt1911","7rnd_45acp_1911"],
-      ["glock17_ep1","17rnd_9x19_glock17"],
-      ["m9","15rnd_9x19_m9"],
-      ["m9sd","15rnd_9x19_m9sd"],
-      ["revolver_ep1","6Rnd_45ACP"],
-      ["revolver_gold_ep1","6Rnd_45ACP"]
-    ];
+    waitUntil {!isNull player};
     _pick = floor random count _sidearms;
     _mag = (_sidearms select _pick) select 1;
     _weapon = (_sidearms select _pick) select 0;
     removeAllItems player;
     removeAllWeapons player;
     for "_i" from 1 to (1 + floor random 7) do {player addMagazine _mag};
-    {player addWeapon _x} forEach [_weapon,"ItemMap","ItemCompass","ItemRadio","Binocular"];
-    
+    {player addWeapon _x} forEach ["Binocular","ItemRadio","ItemMap","ItemCompass",_weapon];
+    player selectWeapon _weapon;
     waitUntil {!alive player};
     waitUntil {alive player};
   };
@@ -39,6 +39,7 @@ setmhq = {
       mhq = _veh;
       publicVariable "mhq";
       player sideChat "MHQ reset!";
+      [player, nil, rSIDECHAT, "MHQ reset!"] call RE;
     };
   };
 };

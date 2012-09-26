@@ -8,15 +8,15 @@ _per = 3;                             //patrol search period
 _group = _this select 0;
 _zone = _this select 1;
 
-_timer = time - _reset;
+_timer = time + 10;
 _origdamage = damage vehicle (units _group select 0);
 
 while {count units _group > 0} do {
-  _look = (time - _timer) > _reset;
+  _look = time > _timer;
   
   _spottedpos = [];
   _spotted = false;
-  _player = [];
+  _player = null;
   for "_i" from 0 to (count playableUnits) - 1 do {
     if ((units _group select 0) knowsAbout vehicle (playableUnits select _i) > _sens) exitWith{
       _spotted = true;
@@ -32,8 +32,8 @@ while {count units _group > 0} do {
       _origdamage = damage vehicle (units _group select 0);
     };
     _handler = [_zone,_spottedpos,_player,_gopara] spawn callheli;
-    waituntil {(scriptDone _handler or count units _group == 0)};
-    _timer = time;
+    waituntil {scriptDone _handler or count units _group == 0};
+    _timer = time + _reset;
   };
   sleep _per;
 };

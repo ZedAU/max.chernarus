@@ -7,7 +7,6 @@ _fortlook = 200;                      //Look radius for forts //not yet implemen
 _skillmin = 5;                        //min bandit skill //needed?
 _skillmax = 10;                       //max bandit skill //needed?
 _dist = 100;                          //max distance possible per itteration //currently mindist + dist
-_period = 3;                         //respawn frequency
 //-------------------------------------------------------------------------------
 _zone = _this select 0;
 _heli = _this select 1;
@@ -36,7 +35,7 @@ while {true} do {
     [_group,[_skillmin,_skillmax],["normal",_dist]] spawn troops;
     sleep 1;
     [_group,["normal",_dist],_veh] spawn vehicles;
-    _handler = [_group, _veh, _zone] spawn loadheli;
+    _handler = [_veh, _zone] spawn loadheli;
     waitUntil {scriptDone _handler};
     call compile format["%1 = _veh", format ["%1heli",_zone]];
   } else {
@@ -44,11 +43,13 @@ while {true} do {
   };
   [_group,_zone] spawn banditmonitor;   //handle in troops? no zone??
   if (_heli) then {
-    waitUntil {sleep _period; (!canMove _veh or count units _group == 0)};
-    {unassignVehicle _x} foreach units _group;
-    _group leaveVehicle _veh;
+    waitUntil {!canMove _veh or count units _group == 0};
+    if (count units _group > 0) then {
+      {unassignVehicle _x} foreach units _group;
+      _group leaveVehicle _veh;
+    };
   } else {
-    waitUntil {sleep _period; count units _group == 0};
+    waitUntil {count units _group == 0};
   };
 }; //what side does a unit return when in a different sided group???
 

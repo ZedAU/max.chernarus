@@ -12,6 +12,6 @@ hint "--Testing Bandits--";
   
 sleep 3;
 ["testzone",true] spawn banditspawner;
-sleep 40;
-hint "spawning foot bandits";
-["testzone",false] spawn banditspawner;
+//sleep 40;
+//hint "spawning foot bandits";
+//["testzone",false] spawn banditspawner;

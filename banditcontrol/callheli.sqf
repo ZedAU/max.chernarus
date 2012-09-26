@@ -8,14 +8,14 @@ _gopara = _this select 3;
 
 //-------------------------------------------------------------------------------setup
 _veh = call compile format ["%1heli",_zone];
-_group = group driver _veh;
 //---------randomizer to estimate ticket call
-while {(count waypoints _group) > 2} do {sleep (random 5 + 5)}; //leave while!
+while {(count waypoints group _veh) > 2} do {sleep (random 5 + 5)}; //leave while!
 
+_veh = vehicle _veh;   //lock in current vehicle name from _veh global var
+_driver = driver _veh;
+_group = group _driver;
 _groupE = group ((assignedCargo _veh) select 0);
 _para = (_player != vehicle _player or _gopara);
-_driver = driver _veh;
-[_group,1] setwaypointposition [_spottedpos,0]; //set for continuing search
 
 //-------------------------------------------------------------------------------get moving
 _group addWaypoint [_spottedpos,0];
@@ -26,15 +26,13 @@ hint format [
   "Heli called\nPara: %1\ngroupE: %2",
   _para, count units _groupE
 ];
-
 waituntil {(_veh distance _spottedpos) < 300 or !alive _driver or !canMove _veh};
 
 //-------------------------------------------------------------------------------abort
 if (!alive _driver or !canMove _veh) exitWith{
-  _group setcurrentwaypoint [_group,1];
-  deleteWaypoint [_group,2];
   hint "aborting callheli";
 };
+[_group,1] setwaypointposition [_spottedpos,0]; //set for continuing search
 
 //-------------------------------------------------------------------------------drop off
 if (_para) then {
@@ -44,9 +42,8 @@ if (_para) then {
   {unassignVehicle _x;} foreach units _groupE;
 };
 _groupE leaveVehicle _veh;
-waituntil {sleep 1; count crew _veh == 1 or (count units _group) == 0};
-  //could add trigger for persistance
+waituntil {count crew _veh <= 1};
 [_groupE,[8,10],["normal",100]] spawn troops;   
 
 //-------------------------------------------------------------------------------go load back up
-[_group, _veh, _zone] spawn loadheli;
+[_veh, _zone] spawn loadheli;
