@@ -29,16 +29,16 @@ _group addVehicle _veh;
 //{_x assignAsDriver _veh} foreach units _group; //????????????
 (units _group) orderGetIn true;
 
-waituntil {count crew _veh >= count units _group or count units _group == 0};
+waituntil {count crew _veh >= count units _group or count units _group == 0 or !canMove _veh};
 _driver = driver _veh;
 //-------------------------------------------------------------------------------main loop
 while {count crew _veh > 0} do {
   waituntil {
-    _veh distance (getwppos [_group,1]) < _proxy or 
+    (_veh distance (getwppos [_group,1])) < _proxy or 
     (damage _veh - _origdamage) > _allowdamage or
-    !alive _driver;
+    !alive _driver or !canMove _veh
   };
-  waituntil {currentWaypoint _group < 3};
+  waituntil {currentWaypoint _group < 3 or !alive _driver or !canMove _veh};
 
 //-------------------------------------------------------------------------------abort
   if ((damage _veh - _origdamage) > _allowdamage and isnull (gunner _veh) and side _group != Civilian) exitWith{};

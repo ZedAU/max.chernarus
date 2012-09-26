@@ -32,7 +32,7 @@ waituntil {(_veh distance _spottedpos) < 300 or !alive _driver or !canMove _veh}
 if (!alive _driver or !canMove _veh) exitWith{
   hint "aborting callheli";
 };
-[_group,1] setwaypointposition [_spottedpos,0]; //set for continuing search
+[_group,1] setwaypointposition [_spottedpos,0]; //set spot for continuing search
 
 //-------------------------------------------------------------------------------drop off
 if (_para) then {

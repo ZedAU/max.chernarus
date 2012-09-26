@@ -4,7 +4,7 @@
 _veh = _this select 0;
 _zone = _this select 1;
 
-_loadCATO = 120;                        //time to loadup before CATO "resets" heli
+_loadCATO = 120;                        //time for loadup before CATO "resets" heli
 
 _zonepos = getmarkerpos _zone;
 _driver = driver _veh;
@@ -17,6 +17,7 @@ if ((count waypoints group _veh) < 3) then {
 };
 
 [_group,2] setWaypointType "move";  //needed?
+[_group,2] setwaypointSpeed "full";
 _group setcurrentwaypoint [_group,2];
 waituntil {(_veh distance _zonepos) < 200 or !alive _driver or !canMove _veh};
 
@@ -38,8 +39,10 @@ _groupE addVehicle _veh;
 (units _groupE) orderGetIn true;                     //may not be needed??? was assigning the wrong group
 //-------------------------------------------------------------------------------cleanup
 _timer = time + _loadCATO; //time to get in before CATO;
-waituntil {count crew _veh >= count units _groupE or time > _timer};
-if (count units _groupE == 0 or time > _timer) exitWith{
+waituntil {count crew _veh >= count units _groupE or time > _timer or !alive _driver or !canMove _veh};
+if (time > _timer or !alive _driver or !canMove _veh) exitWith{
+  _groupE leaveVehicle _veh;
+  waituntil {count crew _veh <= 1};
   _veh setDamage 1;
   [_groupE,[8,10],["normal",100]] spawn troops;
 };

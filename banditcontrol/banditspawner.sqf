@@ -12,6 +12,8 @@ _zone = _this select 0;
 _heli = _this select 1;
 _num = if (count _this > 2) then {_this select 2} else {2};
 if (_heli) then {_num = 1};
+_group = grpNull;
+_veh = objNull;
 
 _centre = getMarkerPos _zone;        //assuming centre
 _cx = _centre select 0; _cy = _centre select 1;
@@ -30,20 +32,21 @@ while {true} do {
   if (_heli) then {
     _veh = createVehicle ["CH_47F_BAF", _pos, [], 0, "FLY"];
     _group addvehicle _veh;
+    _veh flyInHeight 75;
     units _group select 0 moveIndriver _veh;
-    sleep 1;
     [_group,[_skillmin,_skillmax],["normal",_dist]] spawn troops;
     sleep 1;
     [_group,["normal",_dist],_veh] spawn vehicles;
-    _handler = [_veh, _zone] spawn loadheli;
-    waitUntil {scriptDone _handler};
+    [_veh, _zone] spawn loadheli;
     call compile format["%1 = _veh", format ["%1heli",_zone]];
   } else {
     [_group,[_skillmin,_skillmax],["normal",_dist]] spawn troops;
   };
+  
   [_group,_zone] spawn banditmonitor;   //handle in troops? no zone??
+  
   if (_heli) then {
-    waitUntil {!canMove _veh or count units _group == 0};
+    waitUntil {!alive _veh or !canMove _veh or count units _group == 0};
     if (count units _group > 0) then {
       {unassignVehicle _x} foreach units _group;
       _group leaveVehicle _veh;

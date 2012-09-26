@@ -84,6 +84,7 @@ class Mission
 		"cawheeled_d_baf",
 		"caweapons_warfare_weapons",
 		"CAAir2_UH1Y",
+		"CATracked_E",
 		"chernarus"
 	};
 	randomSeed=8923102;
@@ -298,8 +299,8 @@ class Mission
 				items=1;
 				class Item0
 				{
-					position[]={1770.4398,6.2772861,2090.5317};
-					azimut=-96.600304;
+					position[]={1628.2892,16.191319,2326.5854};
+					azimut=-145.81691;
 					id=88;
 					side="GUER";
 					vehicle="GUE_Soldier_1";
@@ -331,7 +332,7 @@ class Mission
 	};
 	class Vehicles
 	{
-		items=101;
+		items=102;
 		class Item0
 		{
 			position[]={1862.8849,6,2137.5325};
@@ -1364,6 +1365,19 @@ class Mission
 			side="EMPTY";
 			vehicle="UH1Y";
 			skill=0.60000002;
+		};
+		class Item101
+		{
+			position[]={1624.4834,16.222685,2329.575};
+			azimut=218.875;
+			special="NONE";
+			id=113;
+			side="EMPTY";
+			vehicle="M1A1_US_DES_EP1";
+			leader=1;
+			skill=0.60000002;
+			init="this addAction [""Test Spawner"", ""testspawn.sqf"",this]; this addAction [""Test Bandits"", ""testbandits.sqf"",this];";
+			description="Respawn vehicle";
 		};
 	};
 	class Markers
