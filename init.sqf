@@ -1,6 +1,7 @@
 /*  Notes
 */
-//enableRadio false;  //could switch it on when needed?
+
+showRadio true;
 0 fadeRadio .05;
 
 _handler = execVM "smallfunctions.sqf";
@@ -14,7 +15,8 @@ execVM "3rdparty\DynamicWeatherEffects.sqf";
 
 if (!IsServer) exitwith{};
 //-------------------------------------------------------------------------------server only
-
+_handler = execVM "fortsys.sqf";
+waitUntil {scriptDone _handler};
 execVM "groupcontrol\groupslist.sqf";
 
 //-------------------------------------------------------------------------------precompiling

@@ -7,17 +7,14 @@ usage: nul = ["marker name","faction",op([skillmin,skillmax(/10)],["speed",dist]
 
 //-------------------------------------------------------------------------------Settings
 _combatmode = "red";
-
 //-------------------------------------------------------------------------------args
-_marker = _this select 0;
+_orig = _this select 0;
 _faction = _this select 1;
 
 _skill = if (count _this > 2) then {_this select 2} else {[0,4]};//or !isnull (_this select 2)??;
 _trav = if (count _this > 3) then {_this select 3} else {["normal",50]};
 _area = if (count _this > 4) then {_this select 4} else {50};
 _times = if (count _this > 5) then {_this select 5} else {1};
-
-_orig = getmarkerPos _marker;
 
 while {_times > 0} do {
   _times = _times - 1;
