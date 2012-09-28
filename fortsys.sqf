@@ -3,11 +3,29 @@
 */
 
 _trigsize = 800; //???
-
-_starttime = time;
 _districts = ["SWzone","SEzone","NEzone","NWzone"]; //blah!
+  
+//FUNCTION for later
+_fortsetup = {
+  _forts = _this select 0;
+  _enemyF = _this select 1;
+  _skill = _this select 2;
+  _num = _this select 3;
+  {
+    _fortpos = getposATL _x;
+    _trig = createTrigger["EmptyDetector", _fortpos];
+    call compile format ["trig%1 = _trig",_x];                       //this is for claimfort
+    _trig setTriggerActivation ["guer", "present", true];
+    _trig setTriggerArea [_trigsize, _trigsize, 0, false];
+    _spawn = format [
+      "[%1,'%2',%3,['normal',50],100,%4] spawn spawner;[thisTrigger] spawn trigdelay",
+      _fortpos, _enemyF, _skill, _num
+    ];
+    _trig setTriggerStatements ["this", _spawn, ""];
+  } foreach _forts;
+};
 
-
+// each district
 {
   _size = (getMarkerSize _x) select 0;
   _districtPos = getMarkerPos _x;
@@ -20,10 +38,11 @@ _districts = ["SWzone","SEzone","NEzone","NWzone"]; //blah!
   _cat2forts = [];
   _cat3forts = [];
   _capital = "";
-
+  
+// each fort
   {
-    _action = _x addaction [format ["Claim %1", _fortname], "claimfort.sqf", [_fortname]];  //******needs sqf, got all args?
-    if (_action > 0) then {_x removeAction _action};
+    _index = _x addaction [format ["Claim %1", _x], "claimfort.sqf", [_x]];  //****** args?
+    if (_index > 0) then {_x removeAction _index};
     
     //sort forts
     _dist = _districtPos distance _x;
@@ -38,39 +57,17 @@ _districts = ["SWzone","SEzone","NEzone","NWzone"]; //blah!
         } else {_capital = _x};
       };
     };
-    
-    /*    
-    _fortpos = getposATL _district;
-    _trig = createTrigger["EmptyDetector", _fortpos];
-    _trig setTriggerActivation ["guer", "present", true];
-    _trig setTriggerArea [_trigsize, _trigsize, 0, false];
-    _spawn = format [
-      "[%1,'%2',%3,['normal',50],100,%4] spawn spawner;[thisTrigger] spawn trigdelay",
-      _fortpos, _enemy, _skill, _num
-    ];
-    _trig setTriggerStatements ["this", _spawn, ""];
-    */
-
   } foreach _districtforts;
   
-  player sideChat format ["cat1::::%1",_cat1forts];
-  player sideChat format ["cat2::::%1",_cat2forts];
-  player sideChat format ["cat3::::%1",_cat3forts];
-  player sideChat format ["capital::::%1",_capital];
-    
-} foreach _districts;
-
-hint format ["setup time: %1",time - _starttime];
-
-
-
-/*
-
-  _capital = _zonepos nearObjects ["FlagPole_EP1",20]; //remeber this is an array of hopefully 1
-  _cat3forts = _zonepos nearObjects ["FlagPole_EP1",_size * .33];
-  _cat2forts = _zonepos nearObjects ["FlagPole_EP1",_size * .66];
-  _cat1forts = (_zonepos nearObjects ["FlagPole_EP1",_size]) - _cat2forts;
-  _cat2forts = _cat2forts - _cat3forts;
-  _cat3forts = _cat3forts - _capital;
+  _enemy = switch (_x) do {
+    case "SWzone":{"TK"};
+    case "SEzone":{"INS"};
+    case "NEzone":{"RU"};
+    case "NWzone":{"US"};
+  };
+  [_cat1forts,_enemy,[0,3],2] call _fortsetup;
+  [_cat2forts,_enemy,[2,5],4] call _fortsetup;
+  [_cat3forts,_enemy,[3,7],5] call _fortsetup;
+  [[_capital],_enemy,[5,10],6] call _fortsetup;
   
-*/
+} foreach _districts;

@@ -329,7 +329,7 @@ class Mission
 	};
 	class Vehicles
 	{
-		items=135;
+		items=134;
 		class Item0
 		{
 			position[]={1862.8849,6,2137.5325};
@@ -1179,7 +1179,6 @@ class Mission
 			side="EMPTY";
 			vehicle="UH1Y";
 			skill=0.60000002;
-			init="this addAction [""Test forts"", ""fortsys.sqf"",this];";
 		};
 		class Item84
 		{
@@ -1641,16 +1640,6 @@ class Mission
 			vehicle="FlagPole_EP1";
 			skill=0.60000002;
 			text="Electro";
-		};
-		class Item134
-		{
-			position[]={1768.7277,6.274569,2090.9336};
-			id=146;
-			side="EMPTY";
-			vehicle="FlagPole_EP1";
-			skill=0.60000002;
-			text="testypole";
-			init="this addaction [""testpole"", ""test.sqf"",this];";
 		};
 	};
 	class Markers
