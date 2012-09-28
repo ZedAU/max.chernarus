@@ -66,7 +66,7 @@ _fortsetup = {
     case "NWzone":{"US"};
   };
   [_cat1forts,_enemy,[0,3],2] call _fortsetup;
-  [_cat2forts,_enemy,[2,5],4] call _fortsetup;
+  [_cat2forts,_enemy,[2,5],3] call _fortsetup;
   [_cat3forts,_enemy,[3,7],5] call _fortsetup;
   [[_capital],_enemy,[5,10],6] call _fortsetup;
   
