@@ -2,40 +2,70 @@
   nearObjects is cpu intensive, looks through all objects of the map!
 */
 
-/*
-_zones = ["SWzone","SEzone","NEzone","NWzone"];
+_trigsize = 800; //???
 
-_zonepos = getMarkerPos "SWzone";
-_capitalpos = getposATL ((_zonepos nearObjects ["FlagPole_EP1",20]) select 0);
+_starttime = time;
+_districts = ["SWzone","SEzone","NEzone","NWzone"]; //blah!
 
-_trig = createTrigger["EmptyDetector",_capitalpos];
-_trig setTriggerActivation ["GUER", "PRESENT", true];
-_trig setTriggerArea [1000, 1000, 0, false];
-_cat1spawn = format ["[%1,'US',[0,3],['normal',50],100,1] spawn spawner; [thisTrigger] spawn trigdelay", _capitalpos];
-_trig setTriggerStatements ["this", _cat1spawn, ""];
-*/
-
-_zones = ["SWzone","SEzone","NEzone","NWzone"];
 
 {
   _size = (getMarkerSize _x) select 0;
-  _zonepos = getMarkerPos _x;
-  _forts = _zonepos nearObjects ["FlagPole_EP1",_size];
-  
+  _districtPos = getMarkerPos _x;
+  _districtforts = _districtPos nearObjects ["FlagPole_EP1",_size];
+
+  _cap = 10;
+  _cat1 = _size * .66; //from this to next
+  _cat2 = _size * .33;
+  _cat1forts = [];
+  _cat2forts = [];
+  _cat3forts = [];
+  _capital = "";
+
   {
-    _fortpos = getposATL _x;
+    _action = _x addaction [format ["Claim %1", _fortname], "claimfort.sqf", [_fortname]];  //******needs sqf, got all args?
+    if (_action > 0) then {_x removeAction _action};
+    
+    //sort forts
+    _dist = _districtPos distance _x;
+    if (_dist > _cat1) then {
+      _cat1forts set [count _cat1forts,_x];
+    } else {
+      if (_dist > _cat2) then {
+        _cat2forts set [count _cat2forts,_x];
+      } else {
+        if (_dist > _cap) then {
+          _cat3forts set [count _cat3forts,_x];
+        } else {_capital = _x};
+      };
+    };
+    
+    /*    
+    _fortpos = getposATL _district;
     _trig = createTrigger["EmptyDetector", _fortpos];
-    _trig setTriggerActivation ["GUER", "PRESENT", true];
-    _trig setTriggerArea [1000, 1000, 0, false];
-    _cat1spawn = format ["[%1,'TK',[0,3],['normal',50],100,2] spawn spawner; [thisTrigger] spawn trigdelay", _fortpos];
-    _trig setTriggerStatements ["this", _cat1spawn, ""];
-  } foreach _forts;
+    _trig setTriggerActivation ["guer", "present", true];
+    _trig setTriggerArea [_trigsize, _trigsize, 0, false];
+    _spawn = format [
+      "[%1,'%2',%3,['normal',50],100,%4] spawn spawner;[thisTrigger] spawn trigdelay",
+      _fortpos, _enemy, _skill, _num
+    ];
+    _trig setTriggerStatements ["this", _spawn, ""];
+    */
+
+  } foreach _districtforts;
   
-} foreach _zones;
+  player sideChat format ["cat1::::%1",_cat1forts];
+  player sideChat format ["cat2::::%1",_cat2forts];
+  player sideChat format ["cat3::::%1",_cat3forts];
+  player sideChat format ["capital::::%1",_capital];
+    
+} foreach _districts;
+
+hint format ["setup time: %1",time - _starttime];
+
+
+
 /*
 
-  
-  
   _capital = _zonepos nearObjects ["FlagPole_EP1",20]; //remeber this is an array of hopefully 1
   _cat3forts = _zonepos nearObjects ["FlagPole_EP1",_size * .33];
   _cat2forts = _zonepos nearObjects ["FlagPole_EP1",_size * .66];
@@ -43,14 +73,4 @@ _zones = ["SWzone","SEzone","NEzone","NWzone"];
   _cat2forts = _cat2forts - _cat3forts;
   _cat3forts = _cat3forts - _capital;
   
-  {
-    _trig = createTrigger["EmptyDetector",getposATL _x];
-    _trig setTriggerActivation ["GUER", "PRESENT", true];
-    _trig setTriggerArea [1000, 1000, 0, false];
-    _cat1spawn = format ["[%1,'US',[0,3],['normal',50],100,1] spawn spawner", getposATL _x];
-    _trig setTriggerStatements ["this", _cat1spawn, ""];
-    
-  } forEach _cat1forts;
-  
-
 */

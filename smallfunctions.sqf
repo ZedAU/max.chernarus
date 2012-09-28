@@ -32,17 +32,15 @@ playerRespawn = {
 };
 
 setmhq = {
-  _pos = _this select 0;
-  _alt = _this select 1;
+  _alt = _this select 0;
   if (_alt) then {
-    _vehlist = _pos nearEntities [["landvehicle","tank","air"],20];
-    if (count _vehlist > 0) then {
-      _veh = _vehlist select 0;
-      hint format ["Setting MHQ to %1",typeOf _veh]; //to blah...
+    if (player != vehicle player) then {
+      _veh = vehicle player;
+      hint format ["Setting MHQ to %1",typeOf _veh];
       mhq = _veh;
       publicVariable "mhq";
       [player, nil, rSIDECHAT, format ["MHQ set to %1",typeOf _veh]] call RE;
-    };
+    } else {hint "Not in vehicle"};
   };
 };
 
@@ -53,7 +51,14 @@ trigdelay = {
   _statements = triggerStatements _trig;
   _statements set [0,"true"];
   _trig setTriggerStatements _statements;
-  sleep 20;
+  
+  _wait = true;
+  while {_wait} do {
+    sleep 30;
+    _players = playableUnits;
+    _intrig = getposATL _trig nearEntities [["man"],triggerArea _trig select 0];
+    {if (!(_x in _intrig)) exitWith{_wait = false}} foreach _players;
+  };
   _statements set [0,"this"];
   _trig setTriggerStatements _statements;
 };

@@ -8,7 +8,7 @@ _handler = execVM "smallfunctions.sqf";
 waitUntil {scriptDone _handler};
 [] spawn playerRespawn;
 
-onMapSingleClick "[_pos,_alt] call setmhq; if (_alt) then {true} else {false}";
+onMapSingleClick "[_alt] call setmhq; if (_alt) then {true} else {false}";
 
 //3rd party scripts
 execVM "3rdparty\DynamicWeatherEffects.sqf";
@@ -17,6 +17,8 @@ if (!IsServer) exitwith{};
 //-------------------------------------------------------------------------------server only
 _handler = execVM "fortsys.sqf";
 waitUntil {scriptDone _handler};
+//hint "fortsys off!!!";
+
 execVM "groupcontrol\groupslist.sqf";
 
 //-------------------------------------------------------------------------------precompiling
