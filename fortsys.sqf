@@ -39,10 +39,19 @@ _fortsetup = {
   _cat3forts = [];
   _capital = "";
   
+  _enemy = switch (_x) do {
+    case "SWzone":{["TK","\ca\ca_e\data\flag_tka_co.paa"]};
+    case "SEzone":{["INS","\ca\data\Flag_chdkz_co.paa"]};
+    case "NEzone":{["RU","\ca\data\Flag_rus_co.paa"]};
+    case "NWzone":{["US","\ca\data\Flag_usa_co.paa"]};
+  };
+  
 // each fort
   {
     _index = _x addaction [format ["Claim %1", _x], "claimfort.sqf", [_x]];  //****** args?
     if (_index > 0) then {_x removeAction _index};
+    
+    _x setflagtexture (_enemy select 1);
     
     //sort forts
     _dist = _districtPos distance _x;
@@ -59,15 +68,9 @@ _fortsetup = {
     };
   } foreach _districtforts;
   
-  _enemy = switch (_x) do {
-    case "SWzone":{"TK"};
-    case "SEzone":{"INS"};
-    case "NEzone":{"RU"};
-    case "NWzone":{"US"};
-  };
-  [_cat1forts,_enemy,[0,3],2] call _fortsetup;
-  [_cat2forts,_enemy,[2,5],3] call _fortsetup;
-  [_cat3forts,_enemy,[3,7],5] call _fortsetup;
-  [[_capital],_enemy,[5,10],6] call _fortsetup;
+  [_cat1forts,_enemy select 0,[0,3],2] call _fortsetup;
+  [_cat2forts,_enemy select 0,[2,5],3] call _fortsetup;
+  [_cat3forts,_enemy select 0,[3,7],5] call _fortsetup;
+  [[_capital],_enemy select 0,[5,10],6] call _fortsetup;
   
 } foreach _districts;

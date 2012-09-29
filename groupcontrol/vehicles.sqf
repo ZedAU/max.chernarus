@@ -7,7 +7,7 @@ _veh = _this select 2;                          //hint (just for search)
 
 //-------------------------------------------------------------------------------settings
 _speed = "full";
-_allowdamage = 0.001;
+_allowdamage = 0.002;
 
 _dist = 6*(_trav select 1);
 _mindist =_dist * .25;
@@ -41,8 +41,9 @@ while {count crew _veh > 0} do {
   waituntil {currentWaypoint _group < 3 or !alive _driver or !canMove _veh};
 
 //-------------------------------------------------------------------------------abort
-  if ((damage _veh - _origdamage) > _allowdamage and isnull (gunner _veh) and side _group != Civilian) exitWith{};
-  if (!canMove _veh or !alive _driver) exitWith{};
+  if ((damage _veh - _origdamage) > _allowdamage and isnull (gunner _veh) and side _group != Civilian) exitWith{
+    hint format ["damage no gunner\n%1",typeOf _veh]};
+  if (!canMove _veh or !alive _driver) exitWith{hint format ["!canMove or !alive driver\n%1",typeOf _veh]};
   //would they kick body out???  they do, but it takes a lot of time and the other dudes dont get back in
   
   _area = _mindist + random _dist;
@@ -57,4 +58,5 @@ while {count crew _veh > 0} do {
 {unassignVehicle _x} foreach units _group;
 _group leaveVehicle _veh;
 waituntil {_veh emptypositions "driver" == 1 or !alive driver _veh}; //count crew _veh == 0
-hint format ["exiting vehicles script\n%1",typeOf _veh];
+[_group,1] setwaypointposition [_veh,0];
+//hint format ["exiting vehicles script\n%1",typeOf _veh];
