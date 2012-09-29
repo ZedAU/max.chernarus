@@ -55,11 +55,12 @@ trigdelay = {
   _wait = true;
   while {_wait} do {
     sleep 30;
-    _players = playableUnits;
     _intrig = getposATL _trig nearEntities [["man"],triggerArea _trig select 0];
-    {if (!(_x in _intrig)) exitWith{_wait = false}} foreach _players;
+    for "_i" from 0 to (count playableUnits) - 1 do {
+      if ((playableUnits select _i) in _intrig) exitWith{_wait = true};
+      _wait = false;
+    };
   };
   _statements set [0,"this"];
-  _trig setTriggerStatements _statements;
 };
 
