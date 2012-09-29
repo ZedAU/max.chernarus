@@ -4,7 +4,7 @@ _fort = _args select 0;
 _pos = getposATL _fort;
 
 //set public flag var
-(call compile format ["flag%1",_fort]) = "flags\xds.jpg";
+call compile format ["flag%1 = 'flags\xds.jpg'",_fort];
 publicVariable format ["flag%1",_fort];
 _fort setflagtexture (call compile format ["flag%1",_fort]);
 

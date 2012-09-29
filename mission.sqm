@@ -1648,7 +1648,8 @@ class Mission
 			side="EMPTY";
 			vehicle="FlagCarrierRU";
 			skill=0.60000002;
-			init="this addaction [""Change Flag"",""testFlag.sqf"",this];";
+			text="testypole";
+			init="this addaction [""test claimfort"",""claimfort.sqf"",[this]];";
 		};
 		class Item135
 		{
@@ -1781,6 +1782,24 @@ class Mission
 			a=3500;
 			b=3500;
 			drawBorder=1;
+		};
+	};
+	class Sensors
+	{
+		items=1;
+		class Item0
+		{
+			position[]={1769.098,6.2439914,2095.0288};
+			a=3;
+			b=3;
+			activationBy="GUER";
+			repeating=1;
+			interruptable=1;
+			age="UNKNOWN";
+			expActiv="null = [thisTrigger] spawn trigdelay; hint ""triggered"";";
+			class Effects
+			{
+			};
 		};
 	};
 };

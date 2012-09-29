@@ -62,5 +62,6 @@ trigdelay = {
     };
   };
   _statements set [0,"this"];
+  _trig setTriggerStatements _statements;
 };
 
