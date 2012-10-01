@@ -1,13 +1,10 @@
 /*  Notes  
   All small functions in one place
-  Do I need to "private" any vars?
+  Do I need to "private" vars?
 */
 
 //-------------------------------------------------------------------------------all clients
 playerRespawn = {
-  waitUntil {!isNull player};
-  player setVariable ["BIS_nocoreConversations", False];
-  
   _sidearms = [["makarov","8rnd_9x18_makarov"],
     ["colt1911","7rnd_45acp_1911"],
     ["glock17_ep1","17rnd_9x19_glock17"],
@@ -18,12 +15,13 @@ playerRespawn = {
   ];
   while {true} do {
     waitUntil {!isNull player};
+    {_x setVariable ["BIS_nocoreConversations", true]} forEach playableUnits;
     _pick = floor random count _sidearms;
     _mag = (_sidearms select _pick) select 1;
     _weapon = (_sidearms select _pick) select 0;
     removeAllItems player;
     removeAllWeapons player;
-    for "_i" from 1 to (1 + floor random 7) do {player addMagazine _mag};
+    for "_i" from 1 to (1 + floor random (count _sidearms)) do {player addMagazine _mag};
     {player addWeapon _x} forEach ["Binocular","ItemRadio","ItemMap","ItemCompass",_weapon];
     player selectWeapon _weapon;
     waitUntil {!alive player};
@@ -40,7 +38,7 @@ setmhq = {
       mhq = _veh;
       publicVariable "mhq";
       [player, nil, rSIDECHAT, format ["MHQ set to %1",typeOf _veh]] call RE;
-    } else {hint "Not in vehicle"};
+    } else {hint "Not in vehicle\nCannot set MHQ"};
   };
 };
 
@@ -52,15 +50,23 @@ trigdelay = {
   _statements set [0,"true"];
   _trig setTriggerStatements _statements;
   
-  _wait = true;
-  while {_wait} do {
-    sleep 30;
+  _isGone = {
+    _gone = true;  //if not reset bellow
+    waitUntil {count playableUnits > 0};
     _intrig = getposATL _trig nearEntities [["man"],triggerArea _trig select 0];
     for "_i" from 0 to (count playableUnits) - 1 do {
-      if ((playableUnits select _i) in _intrig) exitWith{_wait = true};
-      _wait = false;
+      if ((playableUnits select _i) in _intrig) exitWith{_gone = false};
     };
+    _gone
   };
+  
+  while {true} do {
+    waitUntil {sleep 2; call _isGone}; //checks if out of trig every 2 secs
+    sleep 30;
+    _statements = triggerStatements _trig;
+    if (call _isGone) exitWith{}; //exit if still out of trig
+  };
+  
   _statements set [0,"this"];
   _trig setTriggerStatements _statements;
 };

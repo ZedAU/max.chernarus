@@ -2,24 +2,29 @@
   nearObjects is cpu intensive, looks through all objects of the map!
 */
 
-_trigsize = 800; //???
 _districts = ["SWzone","SEzone","NEzone","NWzone"]; //blah!
   
 //FUNCTION for later
 _fortsetup = {
   _forts = _this select 0;
-  _enemyF = _this select 1;
+  _fact = _this select 1;
   _skill = _this select 2;
   _num = _this select 3;
+  
   {
     _fortpos = getposATL _x;
+    
+    _mark = createMarker [format ["mark%1",_x], _fortpos];
+    //_mark setMarkerShape "RECTANGLE";
+    _mark setMarkerSize [range/3,range/3];  //need to calc size based on buildings?
+    
     _trig = createTrigger["EmptyDetector", _fortpos];
-    call compile format ["trig%1 = _trig",_x];                       //this is for claimfort
+    call compile format ["trig%1 = %2",_x,_trig]; //has issues
     _trig setTriggerActivation ["guer", "present", true];
-    _trig setTriggerArea [_trigsize, _trigsize, 0, false];
+    _trig setTriggerArea [range, range, 0, false];
     _spawn = format [
-      "[%1,'%2',%3,['normal',50],100,%4] spawn spawner;[thisTrigger] spawn trigdelay",
-      _fortpos, _enemyF, _skill, _num
+      "[%1,'%2','%3',['normal',50],100,%4] execVM 'groupcontrol\upsSpawner.sqf';[thisTrigger] spawn trigdelay",
+      _fortpos, _fact, format ["mark%1",_x], _num
     ];
     _trig setTriggerStatements ["this", _spawn, ""];
   } foreach _forts;

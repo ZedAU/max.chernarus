@@ -15,6 +15,9 @@ execVM "3rdparty\DynamicWeatherEffects.sqf";
 
 if (!IsServer) exitwith{};
 //-------------------------------------------------------------------------------server only
+
+range = 800; //trigger and despawn range
+
 _handler = execVM "fortsys.sqf";
 waitUntil {scriptDone _handler};
 //hint "fortsys off!!!";

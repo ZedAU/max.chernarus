@@ -1796,7 +1796,7 @@ class Mission
 			repeating=1;
 			interruptable=1;
 			age="UNKNOWN";
-			expActiv="null = [thisTrigger] spawn trigdelay; hint ""triggered"";";
+			expActiv="null = [thisTrigger] execVM ""test.sqf""; hint ""triggered"";";
 			class Effects
 			{
 			};
