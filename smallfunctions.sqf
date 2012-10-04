@@ -30,16 +30,13 @@ playerRespawn = {
 };
 
 setmhq = {
-  _alt = _this select 0;
-  if (_alt) then {
-    if (player != vehicle player) then {
-      _veh = vehicle player;
-      hint format ["Setting MHQ to %1",typeOf _veh];
-      mhq = _veh;
-      publicVariable "mhq";
-      [player, nil, rSIDECHAT, format ["MHQ set to %1",typeOf _veh]] call RE;
-    } else {hint "Not in vehicle\nCannot set MHQ"};
-  };
+  if (player != vehicle player) then {
+    _veh = vehicle player;
+    hint format ["Setting MHQ to %1",typeOf _veh];
+    mhq = _veh;
+    publicVariable "mhq";
+    [player, nil, rSIDECHAT, format ["MHQ set to %1",typeOf _veh]] call RE;
+  } else {hint "Not in vehicle\nCannot set MHQ"};
 };
 
 if (!isServer) exitWith{};
@@ -52,10 +49,9 @@ trigdelay = {
   
   _isGone = {
     _gone = true;  //if not reset bellow
-    waitUntil {count playableUnits > 0};
-    _intrig = getposATL _trig nearEntities [["man"],triggerArea _trig select 0];
+    _intrig = getposATL _trig nearEntities ["AllVehicles",(triggerArea _trig select 0)];
     for "_i" from 0 to (count playableUnits) - 1 do {
-      if ((playableUnits select _i) in _intrig) exitWith{_gone = false};
+      if (vehicle (playableUnits select _i) in _intrig) exitWith {_gone = false};
     };
     _gone
   };
@@ -63,8 +59,8 @@ trigdelay = {
   while {true} do {
     waitUntil {sleep 2; call _isGone}; //checks if out of trig every 2 secs
     sleep 30;
-    _statements = triggerStatements _trig;
-    if (call _isGone) exitWith{}; //exit if still out of trig
+    waitUntil {count playableUnits > 0};
+    if (call _isGone) exitWith{_statements = triggerStatements _trig;}; //exit if still out of trig
   };
   
   _statements set [0,"this"];

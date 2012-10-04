@@ -1,14 +1,9 @@
 ﻿/*  Notes
 */
-//-------------------------------------------------------------------------------settings
-_period = 30;								//check period                    30
-//-------------------------------------------------------------------------------args
 _group = _this select 0;
-//-------------------------------------------------------------------------------monitor range
 
 _isGone = {
   _gone = true;
-  waitUntil {count playableUnits > 0};
   for "_i" from 0 to (count playableUnits) - 1 do {
     if ((units _group select 0) distance vehicle (playableUnits select _i) < range) exitWith{_gone = false};
   };
@@ -17,7 +12,8 @@ _isGone = {
 
 while {count units _group > 0} do {
   waitUntil {sleep 2; call _isGone};
-  sleep _period;
+  sleep 30;
+  waitUntil {count playableUnits > 0};
   if (call _isGone) exitWith{};
 };
 

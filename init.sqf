@@ -1,6 +1,13 @@
 /*  Notes
 */
 
+if ((!isServer) && (player != player)) then
+{
+  waitUntil {player == player};
+};
+//Finish world initialization before mission is launched. 
+//finishMissionInit;
+
 showRadio true;
 0 fadeRadio .05;
 
@@ -8,7 +15,19 @@ _handler = execVM "smallfunctions.sqf";
 waitUntil {scriptDone _handler};
 [] spawn playerRespawn;
 
-onMapSingleClick "[_alt] call setmhq; if (_alt) then {true} else {false}";
+rossco_debug = true;
+
+//event handlers
+if (rossco_debug) then {
+  onMapSingleClick "if (!(_alt or _shift)) then {player setpos _pos; true} else {if (_alt) then {call setmhq; true} else {false}}";
+} else {
+  onMapSingleClick "if (_alt) then {call setmhq; true} else {false}";
+};
+
+"changeflag" addPublicVariableEventHandler {
+  _pole = _this select 1;
+  _pole setFlagTexture "flags\xds.jpg";
+};
 
 //3rd party scripts
 execVM "3rdparty\DynamicWeatherEffects.sqf";
@@ -26,15 +45,17 @@ execVM "groupcontrol\groupslist.sqf";
 
 //-------------------------------------------------------------------------------precompiling
 {call compile format ["%1 = compile preprocessFileLineNumbers 'groupcontrol\%1.sqf'",_x]}
-  foreach ["spawner","rangemonitor","troops","vehicles"];
+  foreach ["spawner","upsSpawner","rangemonitor","troops","vehicles"];
   
 {call compile format ["%1 = compile preprocessFileLineNumbers 'banditcontrol\%1.sqf'",_x]}
   foreach ["banditspawner","banditmonitor","loadheli","callheli"];
   
+ups = compile preprocessFileLineNumbers "3rdparty\ups.sqf";
+  
 //-------------------------------------------------------------------------------get bandits going
 _zones = ["SWzone","SEzone","NEzone","NWzone"];
-{[_x,true] spawn banditspawner} foreach _zones; //heli bandits
-{[_x,false] spawn banditspawner} foreach _zones; //foot bandits
+//{[_x,true] spawn banditspawner} foreach _zones; //heli bandits
+//{[_x,false] spawn banditspawner} foreach _zones; //foot bandits
 
 //-------------------------------------------------------------------------------mhq marker
 

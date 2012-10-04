@@ -10,23 +10,23 @@ _fortsetup = {
   _fact = _this select 1;
   _skill = _this select 2;
   _num = _this select 3;
+  _spRadius = 100;
   
   {
     _fortpos = getposATL _x;
     
     _mark = createMarker [format ["mark%1",_x], _fortpos];
-    //_mark setMarkerShape "RECTANGLE";
     _mark setMarkerSize [range/3,range/3];  //need to calc size based on buildings?
     
     _trig = createTrigger["EmptyDetector", _fortpos];
-    call compile format ["trig%1 = %2",_x,_trig]; //has issues
     _trig setTriggerActivation ["guer", "present", true];
     _trig setTriggerArea [range, range, 0, false];
     _spawn = format [
-      "[%1,'%2','%3',['normal',50],100,%4] execVM 'groupcontrol\upsSpawner.sqf';[thisTrigger] spawn trigdelay",
-      _fortpos, _fact, format ["mark%1",_x], _num
+      "[%1,'%2','%3',%4,%5,%6] spawn upsSpawner;[thisTrigger] spawn trigdelay",
+      _fortpos, _fact, format ["mark%1",_x], _skill, _spRadius, _num
     ];
     _trig setTriggerStatements ["this", _spawn, ""];
+    call compile format ["trig%1 = _trig",_x];
   } foreach _forts;
 };
 
@@ -53,8 +53,7 @@ _fortsetup = {
   
 // each fort
   {
-    _index = _x addaction [format ["Claim %1", _x], "claimfort.sqf", [_x]];  //****** args?
-    if (_index > 0) then {_x removeAction _index};
+    _x setVehicleInit format ["this addaction ['Claim %1', 'claimfort.sqf', [this]]",_x];
     
     _x setflagtexture (_enemy select 1);
     
@@ -79,3 +78,5 @@ _fortsetup = {
   [[_capital],_enemy select 0,[5,10],6] call _fortsetup;
   
 } foreach _districts;
+
+processInitCommands;
