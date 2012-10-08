@@ -9,14 +9,25 @@ usage: nul = ["marker name","faction",op([skillmin,skillmax(/10)],["speed",dist]
 _orig = _this select 0;
 _faction = _this select 1;
 _patrol = _this select 2;
+_runups = true;
+_skill = [];
+_spRadius = 0;
+_times = 1;
+if ("norun" in _this) then {
+  _runups = false;
+  _skill = [0,10];
+  _spRadius = 5;
+  _times = 1;
+} else {
+  _skill = if (count _this > 3) then {_this select 3} else {[0,10]};
+  _spRadius = if (count _this > 4) then {_this select 4} else {50};
+  _times = if (count _this > 5) then {_this select 5} else {1};
+};
 
-_skill = if (count _this > 3) then {_this select 3} else {[0,10]};
-_spRadius = if (count _this > 4) then {_this select 4} else {50};
-_times = if (count _this > 5) then {_this select 5} else {1};
+_group = grpnull;
 
 while {_times > 0} do {
   _times = _times - 1;
-  sleep (random 3);
 
   //-------------------------------------------------------------------------------sides and faction
   _list = call compile format["%1list",_faction];
@@ -27,7 +38,7 @@ while {_times > 0} do {
 
   //-------------------------------------------------------------------------------spawn group
   _spawn = (configFile >> "CfgGroups" >> _pick select 0 >> _pick select 1 >> "Infantry" >> _pick select 2);
-  _rand = ((2 * random _spRadius) - (2 * random _spRadius));
+  _rand = ((2 * random _spRadius) - (2 * random _spRadius));  //check loadheli for a tidyer version.  Would be better to spawn in closest building
   _rndx = (_orig select 0) + _rand;
   _rndy = (_orig select 1) + _rand;
   _group = [[_rndx,_rndy,0], _side, _spawn] call BIS_fnc_spawnGroup;
@@ -46,8 +57,11 @@ while {_times > 0} do {
   } foreach units _group ;
   
   //-------------------------------------------------------------------------------pass to troops script
-  [leader _group,_patrol,"track"] spawn ups;
-  if (rossco_debug) then {[_group] execVM "tracker.sqf"};
-  if (side _group != Civilian) then {[_group] spawn rangemonitor};
+  if (_runups) then {
+    if (rossco_debug) then {[_group] execVM "tracker.sqf"};
+    [leader _group,_patrol] spawn ups;
+    if (side _group != Civilian) then {[_group] spawn rangemonitor};
+  };
 };
+_group
 

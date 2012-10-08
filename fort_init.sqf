@@ -3,8 +3,41 @@
 */
 
 _districts = ["SWzone","SEzone","NEzone","NWzone"]; //blah!
+//need some global place to pull list from user
+// zone setup
+/*
+  _minx = _fortPos select 0;
+  _maxx = _minx;
+  _miny = _fortPos select 1;
+  _maxy = _miny;
+{
   
-//FUNCTION for later
+} forEach _districts;
+*/
+  
+//FUNCTIONS for later
+
+_bldArea = { private ["_list","_fortPos","_minx","_maxx","_miny","_maxy","_pos","_rx","_ry","_cPos"];
+  _list = _this select 0;
+  _fortPos = _this select 1;
+  
+  _minx = _fortPos select 0;
+  _maxx = _minx;
+  _miny = _fortPos select 1;
+  _maxy = _miny;
+  {
+    _pos = getposATL _x;
+    if (_pos select 0 < _minx) then {_minx = _pos select 0};
+    if (_pos select 0 > _maxx) then {_maxx = _pos select 0};
+    if (_pos select 1 < _miny) then {_miny = _pos select 1};
+    if (_pos select 1 > _maxy) then {_maxy = _pos select 1};
+  } foreach _list;
+  
+  _rx = (_maxx - _minx)/2; _ry = (_maxy - _miny)/2;
+  _cPos = [_minx + _rx,_miny + _ry,0];
+  [_rx,_ry,_cPos]
+};
+
 _fortsetup = {
   _forts = _this select 0;
   _fact = _this select 1;
@@ -14,19 +47,31 @@ _fortsetup = {
   
   {
     _fortpos = getposATL _x;
+    _houselist = _fortpos nearObjects ["Building",range/3];
+    _area = [_houselist,_fortpos] call _bldArea;
+    _rx = _area select 0; _ry = _area select 1; _cPos = _area select 2;
     
-    _mark = createMarker [format ["mark%1",_x], _fortpos];
-    _mark setMarkerSize [range/3,range/3];  //need to calc size based on buildings?
+    _markname = format ["mark%1%2",_x,_fact];
+    _mark = createMarker [_markname, _cPos];
+    _mark setMarkerSize [_rx,_ry];
+    if (rossco_debug) then {_mark setMarkerShape "rectangle"};
     
     _trig = createTrigger["EmptyDetector", _fortpos];
     _trig setTriggerActivation ["guer", "present", true];
     _trig setTriggerArea [range, range, 0, false];
     _spawn = format [
       "[%1,'%2','%3',%4,%5,%6] spawn upsSpawner;[thisTrigger] spawn trigdelay",
-      _fortpos, _fact, format ["mark%1",_x], _skill, _spRadius, _num
+      _fortpos, _fact, _markname, _skill, _spRadius, _num
     ];
     _trig setTriggerStatements ["this", _spawn, ""];
-    call compile format ["trig%1 = _trig",_x];
+    
+    _trigarray = _x getVariable "trig";
+    _trig = if (isnil "_trigarray") then {
+      [_trig];
+    } else {
+      _trigarray + [_trig];
+    };
+    _x setVariable ["trig",_trig,false];
   } foreach _forts;
 };
 
@@ -53,9 +98,9 @@ _fortsetup = {
   
 // each fort
   {
-    _x setVehicleInit format ["this addaction ['Claim %1', 'claimfort.sqf', [this]]",_x];
-    
-    _x setflagtexture (_enemy select 1);
+    clearVehicleInit _x; //leaves only one addaction for multizone forts
+    _x setVehicleInit format ["this addaction ['Claim %1', 'claimfort.sqf', this]",_x];
+    _x setflagtexture (_enemy select 1); //sets last zones flag... lots of switching for nothing?
     
     //sort forts
     _dist = _districtPos distance _x;

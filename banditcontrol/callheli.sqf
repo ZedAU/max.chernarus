@@ -8,31 +8,37 @@ _gopara = _this select 3;
 
 //-------------------------------------------------------------------------------setup
 _veh = call compile format ["%1heli",_zone];
-//---------randomizer to estimate ticket call
-while {(count waypoints group _veh) > 2} do {sleep (random 5 + 5)}; //leave while!
+call compile format ["KRON_UPS_%1pilot = 0", _zone];
+waitUntil {
+  sleep (random 1 + 1);
+  _ready = _veh getVariable "ready";
+  if (isNil "_ready") then {false} else {_ready};
+};
 
-_veh = vehicle _veh;   //lock in current vehicle name from _veh global var
+_veh = vehicle _veh;   //lock in current vehicle name from _veh global var... may not do a damn thing?
+_veh setVariable ["ready",false];
 _driver = driver _veh;
 _group = group _driver;
 _groupE = group ((assignedCargo _veh) select 0);
 _para = (_player != vehicle _player or _gopara);
 
 //-------------------------------------------------------------------------------get moving
-_group addWaypoint [_spottedpos,0];
-[_group,2] setWaypointType "move";
-[_group,2] setwaypointSpeed "full";
-_group setcurrentwaypoint [_group,2];
-hint format [
-  "Heli called\nPara: %1\ngroupE: %2",
-  _para, count units _groupE
-];
+_driver doMove (_spottedpos);
+_group setspeedMode "normal";
+
+if (rossco_debug) then {
+  hint format [
+    "%1Heli called\nPara: %2\ngroupE: %3",
+    _zone,_para, count units _groupE
+  ];
+};
+
 waituntil {(_veh distance _spottedpos) < 300 or !alive _driver or !canMove _veh};
 
 //-------------------------------------------------------------------------------abort
 if (!alive _driver or !canMove _veh) exitWith{
-  hint "aborting callheli";
+  if (rossco_debug) then {hint format ["%1Heli broke",_zone]};
 };
-[_group,1] setwaypointposition [_spottedpos,0]; //set spot for continuing search
 
 //-------------------------------------------------------------------------------drop off
 if (_para) then {
@@ -43,7 +49,9 @@ if (_para) then {
 };
 _groupE leaveVehicle _veh;
 waituntil {count crew _veh <= 1};
-[_groupE,[8,10],["normal",100]] spawn troops;   
+if (rossco_debug) then {[_groupE] execVM "tracker.sqf"};
+[leader _groupE,_zone] spawn ups;                             //need to make patrol area for dropped troops
+[_groupE] spawn rangemonitor;
 
 //-------------------------------------------------------------------------------go load back up
 [_veh, _zone] spawn loadheli;

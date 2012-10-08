@@ -9,7 +9,7 @@ _doc addweapon "M4a3_rco_gl_ep1";
 waitUntil {damage _doc > 0};
 
 _doc setSkill 1;
-[_doc, nil, rGLOBALCHAT, "Fuck you all!"] call RE;
+//[_doc, nil, rGLOBALCHAT, "Blah!"] call RE;
 
 _mark = createMarkerLocal ["doc",getposATL _doc];
 _mark setMarkerSize [100,100];

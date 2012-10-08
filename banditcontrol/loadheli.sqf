@@ -1,38 +1,37 @@
 /*  Notes
 */                       //hint
+private ["_veh","_zone","_loadCATO","_loadpos","_driver","_group","_fact","_groupE","_timer"];
 //-------------------------------------------------------------------------------args
 _veh = _this select 0;
 _zone = _this select 1;
 
 _loadCATO = 120;                        //time for loadup before CATO "resets" heli
 
-_zonepos = getmarkerpos _zone;
+_loadpos = [];
+_pos = getMarkerPos _zone;
+while {count _loadpos < 1} do {
+  //isFlatEmpty [float minDistance,float precizePos,float maxGradient,float gradientRadius,float onWater,bool onShore,object skipobj]
+  _loadpos = _pos isFlatEmpty [20,1,20,10,0,false,_veh];
+  _pos = [(_pos select 0) - 50 + random 100,(_pos select 1) - 50 + random 100,0];
+  hint str _loadpos;
+};
+
 _driver = driver _veh;
 _group = group _driver;
 //-------------------------------------------------------------------------------move to capital
-if ((count waypoints group _veh) < 3) then {
-  _group addWaypoint [_zonepos,0];
-} else {
-  [_group,2] setwaypointposition [_zonepos,0];
-};
-
-[_group,2] setWaypointType "move";  //needed?
-[_group,2] setwaypointSpeed "full";
-_group setcurrentwaypoint [_group,2];
-waituntil {(_veh distance _zonepos) < 200 or !alive _driver or !canMove _veh};
+_driver doMove (_loadpos);
+_group setspeedMode "normal";
+waituntil {(_veh distance _loadpos) < 200 or !alive _driver or !canMove _veh};
 
 //-------------------------------------------------------------------------------abort
 if (!alive _driver or !canMove _veh) exitWith{
-  hint "aborting loadheli";
+  hint "loadheli broke heli or driver";
 };
 //-------------------------------------------------------------------------------spawn load
 //spawn new
-_pick = USlist select (floor random (count USlist));  //zone magic needed
-_spawn = (configFile >> "CfgGroups" >> _pick select 0 >> _pick select 1 >> "Infantry" >> _pick select 2);
+_fact = switch (_zone) do {case "SWzone" :{"TK"};case "SEzone" :{"INS"};case "NEzone" :{"RU"};case "NWzone" :{"US"};};
+_groupE = [_loadpos, _fact, _zone,"norun"] call upsSpawner;  //may need to pause ups somehow???
 
-_groupE = [_zonepos, west, _spawn] call BIS_fnc_spawnGroup;
-_groupE setCombatMode "red";
-sleep 1;
 //-------------------------------------------------------------------------------load up
 _groupE addVehicle _veh;
 {_x assignAsCargo _veh;} foreach (units _groupE);
@@ -41,11 +40,13 @@ _groupE addVehicle _veh;
 _timer = time + _loadCATO; //time to get in before CATO;
 waituntil {count crew _veh >= count units _groupE or time > _timer or !alive _driver or !canMove _veh};
 if (time > _timer or !alive _driver or !canMove _veh) exitWith{
-  _groupE leaveVehicle _veh;
-  waituntil {count crew _veh <= 1};
+  if (count units _groupE > 0) then {
+    {_x action ["eject", vehicle _x]} foreach units _groupE;
+    _groupE leaveVehicle _veh;
+    sleep 3;
+  };
   _veh setDamage 1;
-  [_groupE,[8,10],["normal",100]] spawn troops;
 };
-_group setcurrentwaypoint [_group,1];
-deleteWaypoint [_group,2];          //only instance deleted?
-hint "load done";
+call compile format ["KRON_UPS_%1pilot = 1", _zone];
+_veh setVariable ["ready",true];
+if (rossco_debug) then {hint format ["%1 load done",_zone]};

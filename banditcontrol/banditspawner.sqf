@@ -4,8 +4,6 @@
 //sleep 30 + random 30;               //keep down sync issues/serverload on startup?
 sleep random 3;                       //desync scripts on startup
 _fortlook = 200;                      //Look radius for forts //not yet implemented
-_skillmin = 5;                        //min bandit skill //needed?
-_skillmax = 10;                       //max bandit skill //needed?
 _dist = 100;                          //max distance possible per itteration //currently mindist + dist
 //-------------------------------------------------------------------------------
 _zone = _this select 0;
@@ -15,7 +13,7 @@ if (_heli) then {_num = 1};
 _group = grpNull;
 _veh = objNull;
 
-_centre = getMarkerPos _zone;        //assuming centre
+_centre = getMarkerPos _zone;
 _cx = _centre select 0; _cy = _centre select 1;
 _area = getMarkerSize _zone;
 _ax = (_area select 0) * 2; _ay = (_area select 1) * 2; //'radius' not width
@@ -30,29 +28,31 @@ while {true} do {
     _bandit = _bandit createUnit [_pos, _group];
   };
   if (_heli) then {
+    units _group select 0 setVehicleVarName format["%1pilot",_zone];
     _veh = createVehicle ["CH_47F_BAF", _pos, [], 0, "FLY"];
+    _veh setVariable ["ready",false];
+    call compile format["%1heli = _veh",_zone];
     _group addvehicle _veh;
-    _veh flyInHeight 75;
     units _group select 0 moveIndriver _veh;
-    [_group,[_skillmin,_skillmax],["normal",_dist]] spawn troops;
-    sleep 1;
-    [_group,["normal",_dist],_veh] spawn vehicles;
-    [_veh, _zone] spawn loadheli;
-    call compile format["%1 = _veh", format ["%1heli",_zone]];
-  } else {
-    [_group,[_skillmin,_skillmax],["normal",_dist]] spawn troops;
+    _veh flyInHeight 80;
+    if (rossco_debug) then {[_group,"colorYellow"] execVM "tracker.sqf"};
+    _handler = [_veh, _zone] spawn loadheli;
+    waitUntil {scriptDone _handler};
+    [units _group select 0,_zone,"NOWAIT","NOSLOW","NAMED","SHOWMARKER"] spawn ups;
+  } else {[units _group select 0,_zone,"SHOWMARKER"] spawn ups;
+    if (rossco_debug) then {[_group,"colorYellow"] execVM "tracker.sqf"};
   };
   
-  [_group,_zone] spawn banditmonitor;   //handle in troops? no zone??
+  [_group,_zone] spawn banditmonitor;
   
   if (_heli) then {
-    waitUntil {!alive _veh or !canMove _veh or count units _group == 0};
+    waitUntil {sleep 10; !alive _veh or !canMove _veh or count units _group == 0};
     if (count units _group > 0) then {
       {unassignVehicle _x} foreach units _group;
       _group leaveVehicle _veh;
     };
   } else {
-    waitUntil {count units _group == 0};
+    waitUntil {sleep 20; count units _group == 0};
   };
-}; //what side does a unit return when in a different sided group???
+};
 

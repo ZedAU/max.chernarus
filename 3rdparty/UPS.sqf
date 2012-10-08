@@ -49,6 +49,7 @@ if (!isServer) exitWith {};
 // convert argument list to uppercase
 _UCthis = [];
 for [{_i=0},{_i<count _this},{_i=_i+1}] do {_e=_this select _i; if (typeName _e=="STRING") then {_e=toUpper(_e)};_UCthis set [_i,_e]};
+if (rossco_debug) then {_UCthis = _UCthis + ["SHOWMARKER","TRACK"]};             //rossco
 
 // ***************************************** SERVER INITIALIZATION *****************************************
 
@@ -376,9 +377,9 @@ if (_track=="TRACK") then {
 	_markertype = if (isClass(configFile >> "cfgMarkers" >> "WTF_Dot")) then {"WTF_DOT"} else {"DOT"};
 	_trackername setMarkerType _markertype;
 	_markercolor = switch (side _npc) do {
-		case west: {"ColorGreen"};
+		case west: {"ColorBlue"};
 		case east: {"ColorRed"};
-		case resistance: {"ColorBlue"};
+		case resistance: {"ColorGreen"};  //Rossco - swapped resistance/west to correct colour
 		default {"ColorBlack"};
 	};
 	_trackername setMarkerColor _markercolor;
@@ -773,6 +774,12 @@ while {_loop} do {
 	} else {
 		_swimming=false;
 	};
+
+	// check external loop switch  //then {_exit=true} --- rossco - changed to waiting for external switch and put above move command
+	_cont = (call compile format ["KRON_UPS_%1",_npcname]);
+  if (_cont==0 and rossco_debug) then {hint "UPS waiting for switch"};
+	if (_cont==0) then {waitUntil {sleep 2; call compile format ["KRON_UPS_%1 == 1",_npcname]}};
+  if (_cont==0 and rossco_debug) then {hint "UPS finished switch"};
 		
 	_waiting = _waiting - _currcycle;
 	if ((_waiting<=0) && _newpos) then {
@@ -816,12 +823,8 @@ while {_loop} do {
 	
 	// move on
 	_lastdist = _dist; _lastmove2 = _lastmove1; _lastmove1 = _moved; _lastdamm = _damm;
-
-	// check external loop switch
-	_cont = (call compile format ["KRON_UPS_%1",_npcname]);
-	if (_cont==0) then {_exit=true};
-	
 	_makenewtarget=false;
+  
 	if ((_exit) || (isNil("_npc"))) then {
 		_loop=false;
 	} else {
