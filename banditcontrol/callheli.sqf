@@ -46,6 +46,9 @@ if (_para) then {
   for "_i" from 1 to 5 do {_veh fire "CMFlareLauncher";sleep .2};
   {_x action ["eject", vehicle _x]; sleep 1;} foreach units _groupE
 } else {
+  _unloadpos = [_spottedpos] call findClear;
+  _driver doMove _unloadpos;
+  waituntil {(_veh distance _unloadpos) < 100 or !alive _driver or !canMove _veh};
   {unassignVehicle _x;} foreach units _groupE;
 };
 waituntil {count crew _veh <= 1};
