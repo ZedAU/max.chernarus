@@ -1671,7 +1671,7 @@ class Mission
 		class Item1
 		{
 			position[]={3326.7397,185.97736,3931.2837};
-			name="SWzone";
+			name="SW";
 			markerType="ELLIPSE";
 			type="Empty";
 			colorName="ColorGreen";
@@ -1683,7 +1683,7 @@ class Mission
 		class Item2
 		{
 			position[]={10078.13,244.99249,5439.3555};
-			name="SEzone";
+			name="SE";
 			markerType="ELLIPSE";
 			type="Empty";
 			colorName="ColorYellow";
@@ -1712,7 +1712,7 @@ class Mission
 		class Item5
 		{
 			position[]={4771.8984,339,10242.309};
-			name="NWzone";
+			name="NW";
 			markerType="ELLIPSE";
 			type="Empty";
 			colorName="ColorRed";
@@ -1724,7 +1724,7 @@ class Mission
 		class Item6
 		{
 			position[]={11481.049,317.31445,11336.121};
-			name="NEzone";
+			name="NE";
 			markerType="ELLIPSE";
 			type="Empty";
 			colorName="ColorOrange";

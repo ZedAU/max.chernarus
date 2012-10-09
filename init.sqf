@@ -1,9 +1,11 @@
-/*  Notes
-*/
-rossco_debug = false;
+//---------Master Settings---------//
+rossco_debug = true;              //teleport, tracker dots, visible markers and lots of hint stuff
+_districts = ["NW","NE","SW","SE"]; //edit this to reflect district markers in editor... not ideal
+                                   //need place in editor to pull list from user?
+//---------------------------------//
 
-showRadio true;
-0 fadeRadio .05;
+showRadio true;                    //still not working, this command is default true and not the map radio anyway
+0 fadeRadio .05;                   //stops ai yelling eveything
 
 _handler = execVM "smallfunctions.sqf";
 waitUntil {scriptDone _handler};
@@ -20,16 +22,23 @@ if (rossco_debug) then {
 };
 
 if (!IsServer) exitwith{};
-//-------------------------------------------------------------------------------server only
+//-------------------------server only
 
-range = 1000; //trigger and despawn range
+districts = _districts;
+range = 1000; //global trigger and despawn range
+zonedrops = 0;
+
+zones = [
+  "NWzone","NEzone",
+  "SWzone","SEzone"
+]; //do not change these
+
+execVM "groupcontrol\groupslist.sqf";
 
 _handler = execVM "fort_init.sqf";
 waitUntil {scriptDone _handler};
 
-execVM "groupcontrol\groupslist.sqf";
-
-//-------------------------------------------------------------------------------precompiling
+//precompiling
 {call compile format ["%1 = compile preprocessFileLineNumbers 'groupcontrol\%1.sqf'",_x]}
   foreach ["upsSpawner","rangemonitor"];
   
@@ -38,14 +47,13 @@ execVM "groupcontrol\groupslist.sqf";
   
 ups = compile preprocessFileLineNumbers "3rdparty\ups.sqf";
   
-//-------------------------------------------------------------------------------get bandits going
-_zones = ["SWzone","SEzone","NEzone","NWzone"];
-{[_x,true] spawn banditspawner} foreach _zones; //heli bandits
-{[_x,false] spawn banditspawner} foreach _zones; //foot bandits
+//get bandits going
+{[_x,true] spawn banditspawner} foreach zones; //heli bandits
+//{[_x,false] spawn banditspawner} foreach _zones; //foot bandits - might just call heli by troops instead?
 
-//-------------------------------------------------------------------------------mhq marker
-
-if (isNil "mhq") then {mhq = mhq1};  //(needs to be autoed)
+//mhq marker
+if (isNil "mhq") then {mhq = mhq1};  //needs to be automated? or just set to "home"?
+//MHQ tracker  -  init never finishes because of this, nobueno?
 while {true} do {
   if (alive mhq) then {
     "respawn_guerrila" setmarkerpos (getPosATL mhq);

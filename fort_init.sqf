@@ -2,21 +2,42 @@
   nearObjects is cpu intensive, looks through all objects of the map!
 */
 
-_districts = ["SWzone","SEzone","NEzone","NWzone"]; //blah!
-//need some global place to pull list from user
 // zone setup
-/*
-  _minx = _fortPos select 0;
-  _maxx = _minx;
-  _miny = _fortPos select 1;
-  _maxy = _miny;
+_first = getMarkerPos (districts select 0);
+_xmin = _first select 0; _xmax = _first select 0;
+_ymin = _first select 1; _ymax = _first select 1;
+  
 {
-  
-} forEach _districts;
-*/
-  
-//FUNCTIONS for later
+  _pos = getMarkerPos _x;
+  _size = (getMarkerSize _x) select 0;
+  if ((_pos select 0) - _size < _xmin) then {_xmin = (_pos select 0) - _size};
+  if ((_pos select 0) + _size > _xmax) then {_xmax = (_pos select 0) + _size};
+  if ((_pos select 1) - _size < _ymin) then {_ymin = (_pos select 1) - _size};
+  if ((_pos select 1) + _size > _ymax) then {_ymax = (_pos select 1) + _size};
+} forEach districts;
 
+_xtot = _xmax - _xmin; _ytot = _ymax - _ymin;
+_xhalf = _xtot/2; _yhalf = _ytot/2;
+_xquart = _xtot/4; _yquart = _ytot/4;
+
+_grid = [
+  [_xmin + _xquart,_ymax - _yquart,0],[_xmax - _xquart,_ymax - _yquart,0],
+  [_xmin + _xquart,_ymin + _yquart,0],[_xmax - _xquart,_ymin + _yquart,0]
+];
+
+_cols = ["ColorRed","ColorOrange","ColorGreen","ColorYellow"];
+_index = 0;
+{
+  _mark = createMarker [zones select _index,_x];
+  _mark setMarkerSize [_xquart,_yquart];
+  if (rossco_debug) then {
+    _mark setMarkerShape "rectangle";
+    _mark setMarkerColor (_cols select _index);
+  };
+  _index = _index + 1;
+} forEach _grid;
+  
+//FUNCTIONS
 _bldArea = { private ["_list","_fortPos","_minx","_maxx","_miny","_maxy","_pos","_rx","_ry","_cPos"];
   _list = _this select 0;
   _fortPos = _this select 1;
@@ -46,7 +67,7 @@ _fortsetup = {
   _spRadius = 100;
   
   {
-    _fortpos = getposATL _x;
+    _fortpos = getPosATL _x;
     _houselist = _fortpos nearObjects ["Building",range/3];
     _area = [_houselist,_fortpos] call _bldArea;
     _rx = _area select 0; _ry = _area select 1; _cPos = _area select 2;
@@ -75,12 +96,36 @@ _fortsetup = {
   } foreach _forts;
 };
 
+NWzoneforts = []; NEzoneforts = []; SWzoneforts = []; SEzoneforts = []; //global zone forts lists
 // each district
 {
   _size = (getMarkerSize _x) select 0;
   _districtPos = getMarkerPos _x;
+  _districtx = _districtPos select 0;
+  _districty = _districtPos select 1;
   _districtforts = _districtPos nearObjects ["FlagPole_EP1",_size];
-
+  
+  _enemy = ["US","\ca\data\Flag_usa_co.paa"];  //default if anything goes wrong?
+  if (_districtx < _xhalf and _districty > _yhalf) then {
+    _enemy = ["US","\ca\data\Flag_usa_co.paa"];
+    NWzoneforts = NWzoneforts + _districtforts;
+  } else {
+    if (_districtx > _xhalf and _districty > _yhalf) then {
+      _enemy = ["RU","\ca\data\Flag_rus_co.paa"];
+      NEzoneforts = NEzoneforts + _districtforts;
+    } else {
+      if (_districtx < _xhalf and _districty < _yhalf) then {
+        _enemy = ["TK","\ca\ca_e\data\flag_tka_co.paa"];
+        SWzoneforts = SWzoneforts + _districtforts;
+      } else {
+        if (_districtx > _xhalf and _districty < _yhalf) then {
+          _enemy = ["INS","\ca\data\Flag_chdkz_co.paa"];
+          SEzoneforts = SEzoneforts + _districtforts;
+        };
+      };
+    };
+  };
+  
   _cap = 10;
   _cat1 = _size * .66; //from this to next
   _cat2 = _size * .33;
@@ -89,18 +134,11 @@ _fortsetup = {
   _cat3forts = [];
   _capital = "";
   
-  _enemy = switch (_x) do {
-    case "SWzone":{["TK","\ca\ca_e\data\flag_tka_co.paa"]};
-    case "SEzone":{["INS","\ca\data\Flag_chdkz_co.paa"]};
-    case "NEzone":{["RU","\ca\data\Flag_rus_co.paa"]};
-    case "NWzone":{["US","\ca\data\Flag_usa_co.paa"]};
-  };
-  
-// each fort
+// each fort in district
   {
     clearVehicleInit _x; //leaves only one addaction for multizone forts
     _x setVehicleInit format ["this addaction ['Claim %1', 'claimfort.sqf', this]",_x];
-    _x setflagtexture (_enemy select 1); //sets last zones flag... lots of switching for nothing?
+    _x setflagtexture (_enemy select 1); //sets last zone flag, not ideal
     
     //sort forts
     _dist = _districtPos distance _x;
@@ -112,7 +150,7 @@ _fortsetup = {
       } else {
         if (_dist > _cap) then {
           _cat3forts set [count _cat3forts,_x];
-        } else {_capital = _x};
+        } else {_capital = _x};  // has to be only one fort pole within cap distance
       };
     };
   } foreach _districtforts;
@@ -122,6 +160,6 @@ _fortsetup = {
   [_cat3forts,_enemy select 0,[3,7],5] call _fortsetup;
   [[_capital],_enemy select 0,[5,10],6] call _fortsetup;
   
-} foreach _districts;
+} foreach districts;
 
 processInitCommands;

@@ -33,6 +33,7 @@ if (rossco_debug) then {
   ];
 };
 
+sleep 1;
 waituntil {(_veh distance _spottedpos) < 300 or !alive _driver or !canMove _veh};
 
 //-------------------------------------------------------------------------------abort
@@ -47,10 +48,18 @@ if (_para) then {
 } else {
   {unassignVehicle _x;} foreach units _groupE;
 };
-_groupE leaveVehicle _veh;
 waituntil {count crew _veh <= 1};
+_groupE leaveVehicle _veh;
 if (rossco_debug) then {[_groupE] execVM "tracker.sqf"};
-[leader _groupE,_zone] spawn ups;                             //need to make patrol area for dropped troops
+
+_markname = format ["%1drop%2",_zone,zonedrops];
+zonedrops = zonedrops + 1;
+_mark = createMarker [_markname,_spottedpos];
+_mark setMarkerSize [200,200];
+if (rossco_debug) then {_mark setMarkerShape "rectangle"; _mark setMarkerColor "colorRed";};
+
+[leader _groupE,_markname] spawn ups;
+_groupE reveal _player;
 [_groupE] spawn rangemonitor;
 
 //-------------------------------------------------------------------------------go load back up

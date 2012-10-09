@@ -8,11 +8,14 @@ _zone = _this select 1;
 _loadCATO = 120;                        //time for loadup before CATO "resets" heli
 
 _loadpos = [];
-_pos = getMarkerPos _zone;
+_fortlist = [];
+call compile format ["_fortlist = %1forts",_zone];
+_fort = _fortlist select (floor random count _fortlist);
+_pos = getPosATL _fort;  //move searchforpos to global smallfunctions as needed elsewhere
 while {count _loadpos < 1} do {
   //isFlatEmpty [float minDistance,float precizePos,float maxGradient,float gradientRadius,float onWater,bool onShore,object skipobj]
   _loadpos = _pos isFlatEmpty [20,1,20,10,0,false,_veh];
-  _pos = [(_pos select 0) - 50 + random 100,(_pos select 1) - 50 + random 100,0];
+  _pos = [(_pos select 0) - 50 + random 100,(_pos select 1) - 50 + random 100,0]; //set new pos to test
   hint str _loadpos;
 };
 
