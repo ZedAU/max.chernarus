@@ -4,3 +4,5 @@ disabledAI = 1;
 //showMap = 0;
 
 //loadScreen =  "pictures\intro.paa";
+
+class Header { gameType   = Coop; minPlayers = 1; maxPlayers = 6; }; 
