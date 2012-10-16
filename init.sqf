@@ -33,7 +33,10 @@ zones = [
   "SWzone","SEzone"
 ]; //do not change these
 
+//global functions
 execVM "groupcontrol\groupslist.sqf";
+_handler = execVM "3rdparty\UPS_INIT.sqf";
+waitUntil {scriptDone _handler};
 
 _handler = execVM "fort_init.sqf";
 waitUntil {scriptDone _handler};

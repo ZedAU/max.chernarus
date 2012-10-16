@@ -38,9 +38,8 @@ while {_times > 0} do {
 
   //-------------------------------------------------------------------------------spawn group
   _spawn = (configFile >> "CfgGroups" >> _pick select 0 >> _pick select 1 >> "Infantry" >> _pick select 2);
-  _rand = ((2 * random _spRadius) - (2 * random _spRadius));  //check loadheli for a tidyer version.  Would be better to spawn in closest building
-  _rndx = (_orig select 0) + _rand;
-  _rndy = (_orig select 1) + _rand;
+  _rndx = (_orig select 0) - _spRadius + random (_spRadius * 2);
+  _rndy = (_orig select 1) - _spRadius + random (_spRadius * 2);
   _group = [[_rndx,_rndy,0], _side, _spawn] call BIS_fnc_spawnGroup;
 
 //-------------------------------------------------------------------------------set skill
@@ -58,6 +57,7 @@ while {_times > 0} do {
   
   //-------------------------------------------------------------------------------pass to troops script
   if (_runups) then {
+    sleep random 5;
     if (rossco_debug) then {[_group] execVM "tracker.sqf"};
     [leader _group,_patrol] spawn ups;
     if (side _group != Civilian) then {[_group] spawn rangemonitor};
