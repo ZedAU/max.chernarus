@@ -9,6 +9,8 @@ _marker = createMarker [format ["icon%1",_fort], _pos];
 _marker setMarkerType "Flag";
 _marker setMarkerColor "ColorGreen";
 
+_patrols = _fort getVariable "marks";
+
 _trig = _fort getVariable "trig";
 hint str _trig;
 {
@@ -20,7 +22,7 @@ hint str _trig;
 
   _spawn = format [
     "[%1,'%2','%3',%4,%5,%6] spawn upsSpawner;[thisTrigger] spawn trigdelay",
-    _pos, _fact, format ["mark%1",_fort], _skill, _spRadius, _num
+    _pos, _fact, _patrols select 0, _skill, _spRadius, _num
   ];
   _statements set [1,_spawn];
   _x setTriggerStatements _statements;

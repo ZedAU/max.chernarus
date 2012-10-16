@@ -49,7 +49,8 @@ if (!isServer) exitWith {};
 // convert argument list to uppercase
 _UCthis = [];
 for [{_i=0},{_i<count _this},{_i=_i+1}] do {_e=_this select _i; if (typeName _e=="STRING") then {_e=toUpper(_e)};_UCthis set [_i,_e]};
-if (rossco_debug) then {_UCthis = _UCthis + ["SHOWMARKER","TRACK"]};             //rossco
+if (rossco_debug) then {_UCthis = _UCthis + ["TRACK"]};             //rossco
+_UCthis = _UCthis + ["SHOWMARKER"];  //rossco - stops markers from being moved, shown or not in script using empty icon
 
 // ***************************************** SERVER INITIALIZATION *****************************************
 
@@ -777,9 +778,10 @@ while {_loop} do {
 
 	// check external loop switch  //then {_exit=true} --- rossco - changed to waiting for external switch and put above move command
 	_cont = (call compile format ["KRON_UPS_%1",_npcname]);
-  if (_cont==0 and rossco_debug) then {hint "UPS waiting for switch"};
-	if (_cont==0) then {waitUntil {sleep 2; call compile format ["KRON_UPS_%1 == 1",_npcname]}};
-  if (_cont==0 and rossco_debug) then {hint "UPS finished switch"};
+	if (_cont==0) then {
+    call compile format ["UPS_paused_%1 = true",_npcname];
+    waitUntil {sleep 2; call compile format ["KRON_UPS_%1 == 1",_npcname]};
+  };
 		
 	_waiting = _waiting - _currcycle;
 	if ((_waiting<=0) && _newpos) then {

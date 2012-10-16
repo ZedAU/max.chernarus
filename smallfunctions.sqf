@@ -67,19 +67,23 @@ trigdelay = {
   _trig setTriggerStatements _statements;
 };
 
-findClear = {
-  _pos = _this select 0;
+findClear = { private ["_pos","_minClear","_tries","_maxGrad","_ignore","_loadpos"];
+  _orig = _this select 0;
   _minClear = if (count _this > 1) then {_this select 1} else {20};
-  _tries = if (count _this > 2) then {_this select 2} else {20};
-  _increment = if (count _this > 3) then {_this select 3} else {50};
-  _maxGrad = if (count _this > 4) then {_this select 4} else {20};
-  _ignore = if (count _this > 5) then {_this select 5} else {objNull};
-  _loadpos = [];
-  while {count _loadpos < 1 or _tries > 0} do {
+  _tries = if (count _this > 2) then {_this select 2} else {5};
+  _maxGrad = if (count _this > 3) then {_this select 3} else {20};
+  _ignore = if (count _this > 4) then {_this select 4} else {objNull};
+  _loadpos = []; _try = 0; _resets = 2; _pos = _orig;// and _resets < _tries //removed from while for testing
+  while {count _loadpos < 1} do {
     //isFlatEmpty [float minDistance,float precizePos,float maxGradient,float gradientRadius,float onWater,bool onShore,object skipobj]
     _loadpos = _pos isFlatEmpty [_minClear,1,_maxGrad,10,0,false,_ignore];
-    _pos = [(_pos select 0) - (_increment/2) + random _increment,(_pos select 1) - (_increment/2) + random _increment,0]; //set new pos to test
-    _tries = _tries - 1;
+    _pos = [
+      (_orig select 0) - (25*_resets) + random (50*_resets),
+      (_orig select 1) - (25*_resets) + random (50*_resets),
+      0
+    ]; //set new random pos to test
+    _try = _try + 1;
+    if (_try == 20) then {_try = 0; _resets = _resets + 1, hint str _resets;};
   };
   _loadpos
 };

@@ -1,6 +1,3 @@
-/*  Notes
-  nearObjects is cpu intensive, looks through all objects of the map!
-*/
 
 // zone setup
 _first = getMarkerPos (districts select 0);
@@ -38,20 +35,22 @@ _index = 0;
 } forEach _grid;
   
 //FUNCTIONS
-_bldArea = { private ["_list","_fortPos","_minx","_maxx","_miny","_maxy","_pos","_rx","_ry","_cPos"];
+_bldArea = { private ["_x","_list","_fortPos","_minx","_maxx","_miny","_maxy","_pos","_rx","_ry","_cPos"];
   _list = _this select 0;
+    
   _fortPos = _this select 1;
-  
   _minx = _fortPos select 0;
   _maxx = _minx;
   _miny = _fortPos select 1;
   _maxy = _miny;
   {
     _pos = getposATL _x;
-    if (_pos select 0 < _minx) then {_minx = _pos select 0};
-    if (_pos select 0 > _maxx) then {_maxx = _pos select 0};
-    if (_pos select 1 < _miny) then {_miny = _pos select 1};
-    if (_pos select 1 > _maxy) then {_maxy = _pos select 1};
+    if (count (_pos nearObjects ["Building",40]) > 1) then {
+      if (_pos select 0 < _minx) then {_minx = _pos select 0};
+      if (_pos select 0 > _maxx) then {_maxx = _pos select 0};
+      if (_pos select 1 < _miny) then {_miny = _pos select 1};
+      if (_pos select 1 > _maxy) then {_maxy = _pos select 1};
+    };
   } foreach _list;
   
   _rx = (_maxx - _minx)/2; _ry = (_maxy - _miny)/2;
@@ -59,7 +58,8 @@ _bldArea = { private ["_list","_fortPos","_minx","_maxx","_miny","_maxy","_pos",
   [_rx,_ry,_cPos]
 };
 
-_fortsetup = {
+_fortsetup = { private ["_x","_forts","_fact","_skill","_num","_spRadius","_fortpos","_houselist",
+  "_area","_rx","_ry","_cPos","_markname","_mark","_markarray","_marks","_trig","_spawn","_trigarray","_trigs"];
   _forts = _this select 0;
   _fact = _this select 1;
   _skill = _this select 2;
@@ -72,11 +72,21 @@ _fortsetup = {
     _area = [_houselist,_fortpos] call _bldArea;
     _rx = _area select 0; _ry = _area select 1; _cPos = _area select 2;
     
+    //make marker for patrol area
     _markname = format ["mark%1%2",_x,_fact];
     _mark = createMarker [_markname, _cPos];
     _mark setMarkerSize [_rx,_ry];
     if (rossco_debug) then {_mark setMarkerShape "rectangle"};
+    //set in fort variable
+    _markarray = _x getVariable "mark";
+    _marks = if (isnil "_markarray") then {
+      [_mark];
+    } else {
+      _markarray + [_mark];
+    };
+    _x setVariable ["marks",_marks,false];
     
+    //make trigger
     _trig = createTrigger["EmptyDetector", _fortpos];
     _trig setTriggerActivation ["guer", "present", true];
     _trig setTriggerArea [range, range, 0, false];
@@ -85,14 +95,14 @@ _fortsetup = {
       _fortpos, _fact, _markname, _skill, _spRadius, _num
     ];
     _trig setTriggerStatements ["this", _spawn, ""];
-    
+    //set in fort variable
     _trigarray = _x getVariable "trig";
-    _trig = if (isnil "_trigarray") then {
+    _trigs = if (isnil "_trigarray") then {
       [_trig];
     } else {
       _trigarray + [_trig];
     };
-    _x setVariable ["trig",_trig,false];
+    _x setVariable ["trig",_trigs,false];
   } foreach _forts;
 };
 

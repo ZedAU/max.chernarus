@@ -48,8 +48,7 @@ waitUntil {scriptDone _handler};
 ups = compile preprocessFileLineNumbers "3rdparty\ups.sqf";
   
 //get bandits going
-{[_x,true] spawn banditspawner} foreach zones; //heli bandits
-//{[_x,false] spawn banditspawner} foreach _zones; //foot bandits - might just call heli by troops instead?
+{[_x] spawn banditspawner} foreach zones; //heli bandits
 
 //mhq marker
 if (isNil "mhq") then {mhq = mhq1};  //needs to be automated? or just set to "home"?

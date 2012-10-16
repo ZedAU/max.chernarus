@@ -3,7 +3,7 @@ usage: nul = ["marker name","faction",op([skillmin,skillmax(/10)],["speed",dist]
 */
 
 //could this be causing issues?  should handle groups in their own scripts tighter
-{if (count units _x == 0) then {deleteGroup _x}} forEach allGroups; //clean up empty groups; 
+//{if (count units _x == 0) then {deleteGroup _x}} forEach allGroups; //clean up empty groups; 
 
 //-------------------------------------------------------------------------------args
 _orig = _this select 0;
@@ -64,4 +64,3 @@ while {_times > 0} do {
   };
 };
 _group
-
