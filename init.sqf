@@ -16,7 +16,7 @@ execVM "3rdparty\DynamicWeatherEffects.sqf";
 
 //event handlers
 if (rossco_debug) then {
-  onMapSingleClick "if (!(_alt or _shift)) then {player setpos _pos; true} else {if (_alt) then {call setmhq; true} else {false}}";
+  onMapSingleClick "if (!(_alt or _shift)) then {vehicle player setpos _pos; true} else {if (_alt) then {call setmhq; true} else {false}}";
 } else {
   onMapSingleClick "if (_alt) then {call setmhq; true} else {false}";
 };

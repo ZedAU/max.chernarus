@@ -4,7 +4,6 @@
 //sleep 30 + random 30;               //keep down sync issues/serverload on startup?
 sleep random 3;                       //desync scripts on startup
 _fortlook = 200;                      //Look radius for forts //not yet implemented
-_dist = 100;                          //max distance possible per itteration //currently mindist + dist
 //-------------------------------------------------------------------------------
 _zone = _this select 0;
 
@@ -23,10 +22,11 @@ while {true} do {
   _pilot = "Functionary1" createUnit [_pos, _group];
   
   _pilot = units _group select 0;
+  _pilot setSkill 1;
   _pilot setVehicleVarName format["%1pilot",_zone];
   _veh = createVehicle ["CH_47F_BAF", _pos, [], 0, "FLY"];
   _veh setVariable ["busy",true];
-  call compile format["%1heli = _veh",_zone];
+  call compile format["%1heli = _veh",_zone];                    //this needs to be changed to vehVariableName and used throughout
   _group addvehicle _veh;
   _pilot moveIndriver _veh;
   _veh flyInHeight 80;
@@ -38,7 +38,7 @@ while {true} do {
   [_group,_zone] spawn banditmonitor;
   
   waitUntil {sleep 10; !alive _pilot or !alive _veh or !canMove _veh};
-  _pilot setVehicleVarName "";
-  _pilot setdamage 1;
+  //_pilot setVehicleVarName "";
+  deleteVehicle _pilot;
 };
 

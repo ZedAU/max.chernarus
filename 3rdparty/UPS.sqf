@@ -460,8 +460,8 @@ if (_exit) exitWith {
 // ************************************************ MAIN LOOP ************************************************
 _loop=true;
 _currcycle=_cycle;
-while {_loop} do {
-	sleep .01;
+while {_loop and count units group _npc > 0} do {
+	sleep .01;  // rossco - added count above for exiting after despawn
 	// keep track of how long we've been moving towards a destination
 	_timeontarget=_timeontarget+_currcycle;
 	_react=_react+_currcycle;

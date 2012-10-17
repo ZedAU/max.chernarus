@@ -5,9 +5,9 @@ _fort = _this select 3;
 //publicVariable "changeflag"; //other clients
 
 _pos = getposATL _fort;
-_marker = createMarker [format ["icon%1",_fort], _pos];
-_marker setMarkerType "Flag";
+_marker = format ["icon%1",_fort];
 _marker setMarkerColor "ColorGreen";
+_marker setMarkerSize [.8,.8];
 
 _patrols = _fort getVariable "marks";
 

@@ -27,10 +27,10 @@ _index = 0;
 {
   _mark = createMarker [zones select _index,_x];
   _mark setMarkerSize [_xquart,_yquart];
-  if (rossco_debug) then {
+  /*if (rossco_debug) then {
     _mark setMarkerShape "rectangle";
     _mark setMarkerColor (_cols select _index);
-  };
+  };*/
   _index = _index + 1;
 } forEach _grid;
   
@@ -76,7 +76,7 @@ _fortsetup = { private ["_x","_forts","_fact","_skill","_num","_spRadius","_fort
     _markname = format ["mark%1%2",_x,_fact];
     _mark = createMarker [_markname, _cPos];
     _mark setMarkerSize [_rx,_ry];
-    if (rossco_debug) then {_mark setMarkerShape "rectangle"};
+    //if (rossco_debug) then {_mark setMarkerShape "rectangle"};
     //set in fort variable
     _markarray = _x getVariable "mark";
     _marks = if (isnil "_markarray") then {
@@ -85,6 +85,14 @@ _fortsetup = { private ["_x","_forts","_fact","_skill","_num","_spRadius","_fort
       _markarray + [_mark];
     };
     _x setVariable ["marks",_marks,false];
+    
+    //make pole marker
+    if (isNil format ["icon%1",_x]) then {
+      _marker = createMarker [format ["icon%1",_x], _fortpos];
+      _marker setMarkerType "Flag";
+      _marker setMarkerColor "ColorOrange";
+      _marker setMarkerSize [.5,.5];
+    };
     
     //make trigger
     _trig = createTrigger["EmptyDetector", _fortpos];
@@ -136,7 +144,7 @@ NWzoneforts = []; NEzoneforts = []; SWzoneforts = []; SEzoneforts = []; //global
     };
   };
   
-  _cap = 10;
+  _cap = 30;
   _cat1 = _size * .66; //from this to next
   _cat2 = _size * .33;
   _cat1forts = [];

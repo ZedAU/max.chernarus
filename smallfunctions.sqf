@@ -67,7 +67,7 @@ trigdelay = {
   _trig setTriggerStatements _statements;
 };
 
-findClear = { private ["_pos","_minClear","_tries","_maxGrad","_ignore","_loadpos"];
+findClear = { private ["_orig","_pos","_minClear","_tries","_maxGrad","_ignore","_loadpos"];
   _orig = _this select 0;
   _minClear = if (count _this > 1) then {_this select 1} else {20};
   _tries = if (count _this > 2) then {_this select 2} else {5};
